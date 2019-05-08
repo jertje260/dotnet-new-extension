@@ -1,6 +1,5 @@
 export const consoleTemplate = 
-`
-Usage: new [options]
+`Usage: new [options]
 
 Options:
   -h, --help          Displays help for this command.
@@ -29,11 +28,10 @@ Options:
 
 
 * Indicates the value used if the switch is provided without a value.
-`;
+`.replace(/\n/g, "\r\n");
 
 export const angularTemplate =
-`
-Usage: new [options]
+`Usage: new [options]
 
 Options:
   -h, --help          Displays help for this command.
@@ -66,12 +64,10 @@ Options:
 
 
 * Indicates the value used if the switch is provided without a value.
-
-`;
+`.replace(/\n/g, "\r\n");
 
 export const solutionTemplate = 
-`
-Usage: new [options]
+`Usage: new [options]
 
 Options:
   -h, --help          Displays help for this command.
@@ -92,4 +88,4 @@ Author: Microsoft
 Description: Create an empty solution containing no projects
     (No Parameters)
 
-`;
+`.replace(/\n/g, "\r\n");

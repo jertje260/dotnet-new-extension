@@ -52,17 +52,18 @@ function getTemplateFromMatch(match: RegExpMatchArray) {
 }
 
 export function handleDotnetTemplateOutput(template: Template, output: string) {
-    const regex = /(.*?) \(.*?\)\n(Author: (.*))\n(Description: (.*)\n)?(Options:\n(.*(\n))+\n\n|\s+\(No Parameters\))/gm;
+    const regex = new RegExp(/(.*?) \(.*?\)\n(Author: (.*?))\n(Description: (.*?)\n)?(Options:\n((.*?(\n))+)\n\n|\s+\(No Parameters\))/);
     output = output.replace(/\r\n/g, '\n');
     
     const match = output.match(regex);
     if(match !== null){
         template.author = match[3];
         template.description = match[5];
-        handleTemplateOptions(template, match[7]);
+        template = handleTemplateOptions(template, match[7]);
     } else {
         let x = 0;
     }
+    return template;
 }
 
 
@@ -75,9 +76,10 @@ export function handleDotnetTemplateOutput(template: Template, output: string) {
 //                  Default: false / (*) true
 function handleTemplateOptions(template: Template, options: string) {
     if(options === null){
-        return;
+        return template;
     }
     // foreach option add TemplateOptions to template
+    return template;
 }
 
 function handleTemplateOption(option: string[]): TemplateOptions {
