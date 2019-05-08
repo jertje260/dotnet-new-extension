@@ -3,6 +3,7 @@
 import * as vscode from 'vscode';
 import * as commands from './commands';
 import * as handle from './outputHandling';
+import { TemplateManager } from './templateManager';
 
 
 // this method is called when your extension is activated
@@ -19,17 +20,13 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
 		// The code you place here will be executed every time your command is executed
-		commands.getDotnetNewList()
-			.then((result) => {
-				const templates = handle.handleDotnetListOutput(result.stdout);
-				console.info('found ' + (templates.length + 1) + ' templates');
-				templates.forEach(template => {
-					console.info(template.templateName);
-				});
-			})
-			.catch((err) =>
-				console.error(err)
-			);
+		const templateManager = new TemplateManager();
+		try {
+			templateManager.load();
+		} catch (err) {
+			vscode.window.showErrorMessage('Failed to get templates from dotnet new, do you have the dotnet core sdk installed?');
+		}
+
 
 
 		// Display a message box to the user
