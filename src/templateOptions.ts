@@ -1,4 +1,4 @@
-export class TemplateOptions {
+export class TemplateOption {
     constructor(
         public parameter: string,
         public description: string,

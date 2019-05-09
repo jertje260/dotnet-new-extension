@@ -23,6 +23,42 @@ suite("when parsing template output", function () {
 
         assert.equal(2, template.options.length);
     });
+
+    test("given angular template should have author 'Microsoft'", function () {
+        const template = handleTemplate(testTemplates.angularTemplate);
+
+        assert.equal("Microsoft", template.author);
+    });
+
+    test("given angular template should have description ''", function () {
+        const template = handleTemplate(testTemplates.angularTemplate);
+
+        assert.equal("", template.description);
+    });
+
+    test("given angular template should have three options", function () {
+        const template = handleTemplate(testTemplates.angularTemplate);
+
+        assert.equal(3, template.options.length);
+    });
+
+    test("given solution template should have author 'Microsoft'", function () {
+        const template = handleTemplate(testTemplates.solutionTemplate);
+
+        assert.equal("Microsoft", template.author);
+    });
+
+    test("given solution template should have description 'Create an empty solution containing no projects'", function () {
+        const template = handleTemplate(testTemplates.solutionTemplate);
+
+        assert.equal("Create an empty solution containing no projects", template.description);
+    });
+
+    test("given solution template should have no options", function () {
+        const template = handleTemplate(testTemplates.solutionTemplate);
+
+        assert.equal(0, template.options.length);
+    });
 });
 
 function handleTemplate(input: string) {

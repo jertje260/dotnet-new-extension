@@ -1,9 +1,9 @@
-import { TemplateOptions } from "./templateOptions";
+import { TemplateOption } from "./templateOptions";
 
 export class Template {
     public description: string;
     public author: string;
-    public options: TemplateOptions[];
+    public options: TemplateOption[];
 
     constructor(public templateName: string, public shortName: string, public languages: string[], public defaultLanguage: string = "", public tags: string[]) {
         this.description = "";

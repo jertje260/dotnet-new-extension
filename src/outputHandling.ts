@@ -1,8 +1,10 @@
 import { Template } from "./template";
-import { TemplateOptions } from "./templateOptions";
+import { TemplateOption } from "./templateOptions";
 
 const separator = "----------------------------------------------------------------------------------------------------------------------------";
-const regex = /(.*?)[ ]{2,}(.*?)[ ]{2,}(.*?)[ ]{2,}(.*)/;
+const allTemplatesRegex = /(.*?)[ ]{2,}(.*?)[ ]{2,}(.*?)[ ]{2,}(.*)/;
+const singleTemplateRegex = /(.*?)( \(.*?\))?\n(Author: (.*?))\n(Description: (.*?)\n)?(Options:\n((.*?(\n))+)\n\n|(.*?\(No Parameters\)))/;
+const optionsRegex = /((.*?)(--.*?)\s+(.*?)\n\s+(.*?) - (Optional|Required)(\n\s+Default: (.*))?)/;
 
 export function handleDotnetListOutput(output: string): Array<Template> {
     output = output.replace(/\r\n/g, '\n');
@@ -17,7 +19,7 @@ export function handleDotnetListOutput(output: string): Array<Template> {
                 templateListStarted = true;
             }
         } else {
-            let match = lines[i].match(regex);
+            let match = lines[i].match(allTemplatesRegex);
             if (match !== null) {
                 templates.push(getTemplateFromMatch(match));
             }
@@ -52,16 +54,15 @@ function getTemplateFromMatch(match: RegExpMatchArray) {
 }
 
 export function handleDotnetTemplateOutput(template: Template, output: string) {
-    const regex = new RegExp(/(.*?) \(.*?\)\n(Author: (.*?))\n(Description: (.*?)\n)?(Options:\n((.*?(\n))+)\n\n|\s+\(No Parameters\))/);
     output = output.replace(/\r\n/g, '\n');
-    
-    const match = output.match(regex);
-    if(match !== null){
-        template.author = match[3];
-        template.description = match[5];
-        template = handleTemplateOptions(template, match[7]);
+
+    const match = output.match(singleTemplateRegex);
+    if (match !== null) {
+        template.author = match[3] !== undefined ? match[4] : "";
+        template.description = match[5] !== undefined ? match[6] : "";
+        template = handleTemplateOptions(template, match[8]);
     } else {
-        let x = 0;
+        throw Error("matching failed for template: " + template.templateName);
     }
     return template;
 }
@@ -75,13 +76,29 @@ export function handleDotnetTemplateOutput(template: Template, output: string) {
 //                  bool - Optional
 //                  Default: false / (*) true
 function handleTemplateOptions(template: Template, options: string) {
-    if(options === null){
+    if (options === undefined) {
         return template;
     }
+
+    let optionsList = options.split(/\n\n/g);
+    optionsList.forEach(opt => {
+        const match = opt.match(optionsRegex);
+        if(match !== null){
+            console.log(match);
+        }
+    });
     // foreach option add TemplateOptions to template
+
     return template;
 }
 
-function handleTemplateOption(option: string[]): TemplateOptions {
-    return new TemplateOptions("", "", "", false, "");
+function createTemplateOptions(
+    parameter: string,
+    description: string,
+    type: string,
+    optionalRequired: string,
+    defaultValue: string) {
+    // if(type === "bool"){
+    //     defaultValue = 
+    // }
 }
