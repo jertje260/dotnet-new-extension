@@ -5,6 +5,7 @@ const separator = "-------------------------------------------------------------
 const allTemplatesRegex = /(.*?)[ ]{2,}(.*?)[ ]{2,}(.*?)[ ]{2,}(.*)/;
 const singleTemplateRegex = /(.*?)( \(.*?\))?\n(Author: (.*?))\n(Description: (.*?)\n)?(Options:\n((.*?(\n))+)\n\n|(.*?\(No Parameters\)))/;
 const optionsRegex = /((.*?)(--.*?)\s+(.*?)\n\s+(.*?) - (Optional|Required)(\n\s+Default: (.*))?)/;
+const defaultValueBoolRegex = /(\(\*\))?[ ]?(.*?) \/ (\(\*\))?[ ]?(.*)/;
 
 export function handleDotnetListOutput(output: string): Array<Template> {
     output = output.replace(/\r\n/g, '\n');
@@ -83,8 +84,8 @@ function handleTemplateOptions(template: Template, options: string) {
     let optionsList = options.split(/\n\n/g);
     optionsList.forEach(opt => {
         const match = opt.match(optionsRegex);
-        if(match !== null){
-            console.log(match);
+        if (match !== null) {
+            template.options.push(createTemplateOption(match[3], match[4], match[5], match[6], match[8]));
         }
     });
     // foreach option add TemplateOptions to template
@@ -92,13 +93,17 @@ function handleTemplateOptions(template: Template, options: string) {
     return template;
 }
 
-function createTemplateOptions(
+function createTemplateOption(
     parameter: string,
     description: string,
     type: string,
     optionalRequired: string,
     defaultValue: string) {
-    // if(type === "bool"){
-    //     defaultValue = 
-    // }
+    if (type === "bool") {
+        const match = defaultValue.match(defaultValueBoolRegex);
+        if (match !== null) {
+            defaultValue = match[1] !== undefined ? match[2] : match[4];
+        }
+    }
+    return new TemplateOption(parameter, description, type, optionalRequired === "Optional", defaultValue);
 }
