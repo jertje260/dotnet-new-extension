@@ -4,6 +4,8 @@ import * as vscode from 'vscode';
 import * as commands from './commands';
 import * as handle from './outputHandling';
 import { TemplateManager } from './templateManager';
+import * as webviews from './webviews';
+
 
 
 // this method is called when your extension is activated
@@ -18,19 +20,36 @@ export function activate(context: vscode.ExtensionContext) {
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('extension.helloWorld', () => {
+	let disposable = vscode.commands.registerCommand('extension.selectTemplate', () => {
+		const panel = vscode.window.createWebviewPanel(
+			'templateSelector',
+			'Select your template',
+			vscode.ViewColumn.One,
+			{}
+		);
+
+
+		panel.webview.html = webviews.getLoadingView();
 		// The code you place here will be executed every time your command is executed
+
 		const templateManager = new TemplateManager();
 		try {
-			templateManager.load();
+			templateManager
+				.load()
+				.then(() => {
+					panel.webview.html = webviews.getTemplateView(templateManager.getTemplates());
+				});
 		} catch (err) {
-			vscode.window.showErrorMessage('Failed to get templates from dotnet new, do you have the dotnet core sdk installed?');
+			panel.webview.html = webviews.getLoadingFailedView(err);
 		}
 
-
-
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World!');
+		panel.webview.onDidReceiveMessage(
+			message => {
+				
+			},
+			undefined,
+			context.subscriptions
+		  );
 	});
 
 	context.subscriptions.push(disposable);
