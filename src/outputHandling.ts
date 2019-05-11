@@ -115,7 +115,7 @@ function createTemplateOption(
         type = "select";
         selectOptions = createSelectOptions(optionList);
     }
-    return new TemplateOption(parameter, description, type, optionalRequired === "Required", defaultValue, selectOptions);
+    return new TemplateOption(parameter.trim(), description.trim(), type, optionalRequired === "Required", defaultValue.trim(), selectOptions);
 }
 
 const optionRegex = /(.*) - (.*)/;
