@@ -5,27 +5,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading templates</title>
+    <style>
+        .container {
+            display: flex;
+        }
+
+        .fixed {
+            width: 66%;
+        }
+
+        .flex-item {
+            flex-grow: 1;
+        }
+    </style>
 </head>
 
 <body>
     <p id="loading">Loading templates, please wait</p>
 
-    <div id="templates" style="display: none;">
-        <table id="templateTable" style="width: 66%; display: inline-block">
-            <thead>
-                <tr>
-                    <th>
-                        Template Name
-                    </th>
-                    <th>
-                        Template Tags
-                    </th>
-                </tr>
-            </thead>
-            <tbody id="templateBody">
-            </tbody>
-        </table>
-        <div id="template" style="width: 33%; display: inline-block">
+    <div id="templates" class="container" style="display: none;">
+        <div class="fixed">
+            <table id="templateTable" style="width: 66%; display: inline-block">
+                <thead>
+                    <tr>
+                        <th>
+                            Template Name
+                        </th>
+                        <th>
+                            Template Tags
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="templateBody">
+                </tbody>
+            </table>
+        </div>
+        <div id="template" class="flex-item">
             <p id="loadingTemplate" style="display: none;">Loading template</p>
             <div id="templateItem" style="display: none;">
 

@@ -50,15 +50,15 @@ function getTemplateFromMatch(match: RegExpMatchArray) {
     return new Template(templateName, shortName, cleanedLanguages, defaultLanguage, tags);
 }
 
-const singleTemplateRegex = /(.*?)( \(.*?\))?\n(Author: (.*?))\n(Description: (.*?)\n)?(Options:\s*\n((.*?(\n))+)\n\n|(.*?\(No Parameters\)))/g;
+const singleTemplateRegex = /(.*?)( \(.*?\))?\n(Author: (.*?))\n(Description: (((.*?)\n)*))?(Options:\s*\n((.*?(\n))+)\n\n|(.*?\(No Parameters\)))/;
 export function handleDotnetTemplateOutput(template: Template, output: string) {
     output = output.replace(/\r\n/g, '\n');
 
     const match = output.match(singleTemplateRegex);
     if (match !== null) {
         template.author = match[3] !== undefined ? match[4] : "";
-        template.description = match[5] !== undefined ? match[6] : "";
-        template = handleTemplateOptions(template, match[8]);
+        template.description = match[5] !== undefined ? match[6].replace(/\n/g, ' ').trim() : "";
+        template = handleTemplateOptions(template, match[10]);
     } else {
         throw Error("matching failed for template: " + template.templateName);
     }
@@ -74,7 +74,7 @@ export function handleDotnetTemplateOutput(template: Template, output: string) {
 //   --no-restore   If specified, skips the automatic restore of the project on create.
 //                  bool - Optional
 //                  Default: false / (*) true
-const optionsRegex = /((.*?)(--.*?)\s+(.*?)\n\s+(.*?) - (Optional|Required)(\n\s+Default: (.*))?)/g;
+const optionsRegex = /(.*?)(--.*?)\s+(.*?)\n(\s+((.*?) - (Optional|Required))|((\s+(.*?) - (.*?\n))+))\n?(\s+Default: (.*))?/;
 function handleTemplateOptions(template: Template, options: string) {
     if (options === undefined) {
         return template;
@@ -84,7 +84,7 @@ function handleTemplateOptions(template: Template, options: string) {
     optionsList.forEach(opt => {
         const match = opt.match(optionsRegex);
         if (match !== null) {
-            template.options.push(createTemplateOption(match[3], match[4], match[5], match[6], match[8]));
+            template.options.push(createTemplateOption(match[3], match[4], match[6], match[7], match[13], match[8]));
         } else {
             throw Error("matching failed for option: " + template.templateName);
         }
@@ -95,17 +95,22 @@ function handleTemplateOptions(template: Template, options: string) {
 }
 
 const defaultValueBoolRegex = /(\(\*\))?[ ]?(.*?) \/ (\(\*\))?[ ]?(.*)/;
+const optionRegex = /(\s+(.*) - (.*))/;
 function createTemplateOption(
     parameter: string,
     description: string,
     type: string,
     optionalRequired: string,
-    defaultValue: string) {
+    defaultValue: string,
+    optionList: string) {
     if (type === "bool") {
         const match = defaultValue.match(defaultValueBoolRegex);
         if (match !== null) {
             defaultValue = match[1] !== undefined ? match[2] : match[4];
         }
+    }
+    if(type === undefined && optionList !== undefined){
+        type = "select";
     }
     return new TemplateOption(parameter, description, type, optionalRequired === "Optional", defaultValue);
 }

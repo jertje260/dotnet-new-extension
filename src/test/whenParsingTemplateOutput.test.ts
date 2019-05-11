@@ -59,6 +59,42 @@ suite("when parsing template output", function () {
 
         assert.equal(0, template.options.length);
     });
+
+    test("given mvc template should have author 'Microsoft'", function () {
+        const template = handleTemplate(testTemplates.mvcTemplate);
+
+        assert.equal("Microsoft", template.author);
+    });
+
+    test("given mvc template should have description 'A project template for creating an ASP.NET Core application with example ASP.NET Core MVC Views and Controllers. ...'", function () {
+        const template = handleTemplate(testTemplates.mvcTemplate);
+
+        assert.equal(`A project template for creating an ASP.NET Core application with example ASP.NET Core MVC Views and Controllers. This template can also be used for RESTful HTTP services. This template contains technologies from parties other than Microsoft, see https://aka.ms/aspnetcore-template-3pn-210 for details.`, template.description);
+    });
+
+    test("given mvc template should have 15 options", function () {
+        const template = handleTemplate(testTemplates.mvcTemplate);
+
+        assert.equal(15, template.options.length);
+    });
+
+    test("given mvc template should have first option select", function () {
+        const template = handleTemplate(testTemplates.mvcTemplate);
+
+        assert.equal("select", template.options[0].type);
+    });
+
+    test("given mvc template should have second option string", function () {
+        const template = handleTemplate(testTemplates.mvcTemplate);
+
+        assert.equal("string", template.options[1].type);
+    });
+
+    test("given mvc template should have last option bool", function () {
+        const template = handleTemplate(testTemplates.mvcTemplate);
+
+        assert.equal("bool", template.options[14].type);
+    });
 });
 
 function handleTemplate(input: string) {

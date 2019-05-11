@@ -1,7 +1,5 @@
 import * as assert from 'assert';
 import { Template } from '../template';
-import * as handler from '../outputHandling';
-import * as commands from '../commands';
 import { TestTemplateManager } from './TestTemplateManager';
 
 const templateManager = new TestTemplateManager();

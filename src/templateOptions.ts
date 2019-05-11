@@ -2,9 +2,9 @@ export class TemplateOption {
     constructor(
         public parameter: string,
         public description: string,
-        public type: any,
+        public type: string,
         public optional: boolean,
-        public defaultValue: any,
+        public defaultValue: string,
     ) {
 
     }
