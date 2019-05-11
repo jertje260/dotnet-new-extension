@@ -7,7 +7,7 @@ export class TemplateOption {
         public defaultValue: string,
         public selectOptions: SelectOption[]
     ) {
-
+        
     }
 }
 

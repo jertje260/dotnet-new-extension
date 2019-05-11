@@ -23,29 +23,34 @@
 <body>
     <p id="loading">Loading templates, please wait</p>
 
-    <div id="templates" class="container" style="display: none;">
-        <div class="fixed">
-            <table id="templateTable" style="width: 66%; display: inline-block">
-                <thead>
-                    <tr>
-                        <th>
-                            Template Name
-                        </th>
-                        <th>
-                            Template Tags
-                        </th>
-                    </tr>
-                </thead>
-                <tbody id="templateBody">
-                </tbody>
-            </table>
-        </div>
-        <div id="template" class="flex-item">
-            <p id="loadingTemplate" style="display: none;">Loading template</p>
-            <div id="templateItem" style="display: none;">
+    <div id="templates" style="display: none;">
+        <p>Click an item to see more information</p>
+        <table id="templateTable" style="width: 66%; display: inline-block">
+            <thead>
+                <tr>
+                    <th>
+                        Template Name
+                    </th>
+                    <th>
+                        Template Tags
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="templateBody">
+            </tbody>
+        </table>
+    </div>
+    <div id="template" style="display: none;">
+        <button id="backToTemplates">Back to templates</button>
+        <p id="loadingTemplate">Loading template</p>
+        <div id="templateItem" style="display: none;">
 
-            </div>
         </div>
+        <div id="templateButtons">
+            <button id="dryRun">Dry Run</button>
+            <button id="create">Create</button>
+        </div>
+    </div>
     </div>
 
 </body>
@@ -80,10 +85,14 @@
 
     function initEventHandling() {
         document.getElementById("templateBody").addEventListener("click", (evt) => {
-            console.log(evt);
             if (evt.target.parentElement.localName === "tr") {
                 fetchTemplate(evt.target.parentElement.id);
             }
+        });
+
+        document.getElementById("backToTemplates").addEventListener("click", (evt) => {
+            // hide template, show templates
+            showTemplatesBlock();
         });
     }
 
@@ -94,8 +103,19 @@
         });
     }
 
+    function showTemplateBlock() {
+        document.getElementById("templates").style.display = "none";
+        document.getElementById("template").style.display = "block"
+    }
+
+    function showTemplatesBlock() {
+        document.getElementById("template").style.display = "none";
+        document.getElementById("templates").style.display = "block"
+    }
+
     function fetchTemplate(shortName) {
-        document.getElementById('loadingTemplate').style.display = "inline-block";
+        showTemplateBlock();
+        document.getElementById('loadingTemplate').style.display = "block";
         document.getElementById('templateItem').style.display = "none";
         vscode.postMessage({
             command: 'loadTemplate',
@@ -112,13 +132,13 @@
         }
         tbody.innerHTML = template;
         document.getElementById("loading").style.display = "none";
-        document.getElementById("templates").style.display = "inline-block";
+        document.getElementById("templates").style.display = "block";
     }
 
     function loadTemplate(template) {
         const itemTemplate = document.getElementById('templateItem');
 
-        itemTemplate.innerHTML = `
+        let html = `
         <table>
             <tr>
                 <td>
@@ -138,8 +158,16 @@
             </tr>
         </table>`;
 
+        html += generateForm(template);
+
+        itemTemplate.innerHTML = html;
+
         document.getElementById('loadingTemplate').style.display = "none";
-        itemTemplate.style.display = "inline-block";
+        itemTemplate.style.display = "block";
+    }
+
+    function generateForm(template){
+        return "";
     }
 
     init();
