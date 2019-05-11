@@ -90,6 +90,18 @@ suite("when parsing template output", function () {
         assert.equal(6, template.options[0].selectOptions.length);
     });
 
+    test("given mvc template should have first option select with first key 'None'", function () {
+        const template = handleTemplate(testTemplates.mvcTemplate);
+
+        assert.equal("None", template.options[0].selectOptions[0].key);
+    });
+
+    test("given mvc template should have first option select with first description 'No authentication'", function () {
+        const template = handleTemplate(testTemplates.mvcTemplate);
+
+        assert.equal("No authentication", template.options[0].selectOptions[0].description);
+    });
+
     test("given mvc template should have second option string", function () {
         const template = handleTemplate(testTemplates.mvcTemplate);
 

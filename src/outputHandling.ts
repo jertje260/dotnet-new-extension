@@ -117,14 +117,14 @@ function createTemplateOption(
     return new TemplateOption(parameter, description, type, optionalRequired === "Required", defaultValue, selectOptions);
 }
 
-const optionRegex = /(\s+(.*) - (.*))/;
+const optionRegex = /(.*) - (.*)/;
 function createSelectOptions(optionList: string): SelectOption[] {
     const options = optionList.split('\n');
     let selections : SelectOption[] = [];
     options.forEach((opt) =>{
         const match = opt.trim().match(optionRegex);
         if(match !== null){
-            selections.push({key: match[1], description: match[2]});
+            selections.push({key: match[1].trim(), description: match[2].trim()});
         }
     });
     return selections;
