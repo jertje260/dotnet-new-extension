@@ -3,7 +3,7 @@ import * as handler from './outputHandling';
 import { Template } from './template';
 
 export class TemplateManager {
-    private templates: Template[] = [];
+    protected templates: Template[] = [];
     private loaded: boolean = false;
 
     public getTemplates(): Promise<Template[]> {
@@ -25,17 +25,18 @@ export class TemplateManager {
             const template = this.getTemplateByShortname(templateShortName);
             if (template !== null) {
                 if (template.loaded) {
-                    console.log('template is already loaded, no need to ask the CLI again.');
                     resolve(template);
                 } else {
-                    console.log('asking template from CLI')
                     commands.getDotnetNewTemplateInformation(template)
                         .then((output) => {
-                            console.log('parsing the CLI output');
-                            resolve(handler.handleDotnetTemplateOutput(template, output.stdout));
+                            try {
+                                resolve(handler.handleDotnetTemplateOutput(template, output.stdout));
+                            } catch (err) {
+                                reject(err);
+                            }
                         })
                         .catch((err) => {
-                            reject(`Failed to get additional information for template '${template.shortName}'`)
+                            reject(`Failed to get additional information for template '${template.shortName}'`);
                         });
                 }
             } else {

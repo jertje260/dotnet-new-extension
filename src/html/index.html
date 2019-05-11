@@ -25,8 +25,11 @@
             <tbody id="templateBody">
             </tbody>
         </table>
-        <div id="template" style="width: 66%; display: inline-block">
-            <p id="loadingTemplate">Loading template</p>
+        <div id="template" style="width: 33%; display: inline-block">
+            <p id="loadingTemplate" style="display: none;">Loading template</p>
+            <div id="templateItem" style="display: none;">
+
+            </div>
         </div>
     </div>
 
@@ -63,7 +66,7 @@
     function initEventHandling() {
         document.getElementById("templateBody").addEventListener("click", (evt) => {
             console.log(evt);
-            if(evt.target.parentElement.localName === "tr"){
+            if (evt.target.parentElement.localName === "tr") {
                 fetchTemplate(evt.target.parentElement.id);
             }
         });
@@ -76,7 +79,9 @@
         });
     }
 
-    function fetchTemplate(shortName){
+    function fetchTemplate(shortName) {
+        document.getElementById('loadingTemplate').style.display = "inline-block";
+        document.getElementById('templateItem').style.display = "none";
         vscode.postMessage({
             command: 'loadTemplate',
             data: shortName
@@ -93,6 +98,33 @@
         tbody.innerHTML = template;
         document.getElementById("loading").style.display = "none";
         document.getElementById("templates").style.display = "inline-block";
+    }
+
+    function loadTemplate(template) {
+        const itemTemplate = document.getElementById('templateItem');
+
+        itemTemplate.innerHTML = `
+        <table>
+            <tr>
+                <td>
+                    Name:
+                </td>
+                <td>
+                    ${template.templateName}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    Description:
+                </td>
+                <td>
+                    ${template.description}
+                </td>
+            </tr>
+        </table>`;
+
+        document.getElementById('loadingTemplate').style.display = "none";
+        itemTemplate.style.display = "inline-block";
     }
 
     init();

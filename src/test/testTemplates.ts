@@ -18,13 +18,13 @@ Options:
 Console Application (C#)
 Author: Microsoft
 Description: A project for creating a command-line application that can run on .NET Core on Windows, Linux and macOS
-Options:
-  --langVersion  Sets langVersion in the created project file
-                 text - Optional
+Options:                                                                            
+  --langVersion  Sets langVersion in the created project file                       
+                 text - Optional                                                    
 
   --no-restore   If specified, skips the automatic restore of the project on create.
-                 bool - Optional
-                 Default: false / (*) true
+                 bool - Optional                                                    
+                 Default: false / (*) true                                          
 
 
 * Indicates the value used if the switch is provided without a value.
@@ -49,7 +49,7 @@ Options:
 
 ASP.NET Core with Angular (C#)
 Author: Microsoft
-Options:
+Options:                                                                            
   --exclude-launch-settings  Whether to exclude launchSettings.json from the generated template.
                              bool - Optional
                              Default: false / (*) true

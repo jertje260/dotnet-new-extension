@@ -2,11 +2,8 @@ import { Template } from "./template";
 import { TemplateOption } from "./templateOptions";
 
 const separator = "----------------------------------------------------------------------------------------------------------------------------";
-const allTemplatesRegex = /(.*?)[ ]{2,}(.*?)[ ]{2,}(.*?)[ ]{2,}(.*)/;
-const singleTemplateRegex = /(.*?)( \(.*?\))?\n(Author: (.*?))\n(Description: (.*?)\n)?(Options:\n((.*?(\n))+)\n\n|(.*?\(No Parameters\)))/;
-const optionsRegex = /((.*?)(--.*?)\s+(.*?)\n\s+(.*?) - (Optional|Required)(\n\s+Default: (.*))?)/;
-const defaultValueBoolRegex = /(\(\*\))?[ ]?(.*?) \/ (\(\*\))?[ ]?(.*)/;
 
+const allTemplatesRegex = /(.*?)[ ]{2,}(.*?)[ ]{2,}(.*?)[ ]{2,}(.*)/;
 export function handleDotnetListOutput(output: string): Array<Template> {
     output = output.replace(/\r\n/g, '\n');
     let lines = output.split('\n');
@@ -30,6 +27,7 @@ export function handleDotnetListOutput(output: string): Array<Template> {
     return templates;
 }
 
+const defaultLanguageRegex = /\[(.*)\]/;
 function getTemplateFromMatch(match: RegExpMatchArray) {
     const templateName = match[1];
     const shortName = match[2];
@@ -38,8 +36,6 @@ function getTemplateFromMatch(match: RegExpMatchArray) {
     let defaultLanguage = "";
     const cleanedLanguages: string[] = [];
 
-
-    const defaultLanguageRegex = /\[(.*)\]/;
     languages.forEach(lang => {
         const match = lang.match(defaultLanguageRegex);
         if (match !== null) {
@@ -54,6 +50,7 @@ function getTemplateFromMatch(match: RegExpMatchArray) {
     return new Template(templateName, shortName, cleanedLanguages, defaultLanguage, tags);
 }
 
+const singleTemplateRegex = /(.*?)( \(.*?\))?\n(Author: (.*?))\n(Description: (.*?)\n)?(Options:\s*\n((.*?(\n))+)\n\n|(.*?\(No Parameters\)))/g;
 export function handleDotnetTemplateOutput(template: Template, output: string) {
     output = output.replace(/\r\n/g, '\n');
 
@@ -77,6 +74,7 @@ export function handleDotnetTemplateOutput(template: Template, output: string) {
 //   --no-restore   If specified, skips the automatic restore of the project on create.
 //                  bool - Optional
 //                  Default: false / (*) true
+const optionsRegex = /((.*?)(--.*?)\s+(.*?)\n\s+(.*?) - (Optional|Required)(\n\s+Default: (.*))?)/g;
 function handleTemplateOptions(template: Template, options: string) {
     if (options === undefined) {
         return template;
@@ -87,6 +85,8 @@ function handleTemplateOptions(template: Template, options: string) {
         const match = opt.match(optionsRegex);
         if (match !== null) {
             template.options.push(createTemplateOption(match[3], match[4], match[5], match[6], match[8]));
+        } else {
+            throw Error("matching failed for option: " + template.templateName);
         }
     });
     // foreach option add TemplateOptions to template
@@ -94,6 +94,7 @@ function handleTemplateOptions(template: Template, options: string) {
     return template;
 }
 
+const defaultValueBoolRegex = /(\(\*\))?[ ]?(.*?) \/ (\(\*\))?[ ]?(.*)/;
 function createTemplateOption(
     parameter: string,
     description: string,
