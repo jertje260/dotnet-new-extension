@@ -39,10 +39,6 @@
         </div>
     </div>
     </div>
-    <form id=template-form>
-        <label for="template-name"></label>
-        <input id="template-name" type="text"/>
-    </form>
 </body>
 <script>
     const vscode = acquireVsCodeApi();
@@ -157,11 +153,31 @@
     }
 
     function generateForm(template) {
-        let form = `
-        
-        `;
+        let form = "<form id=template-form>";
+
+        const optionKeys = Object.keys(template.options);
+        optionKeys.forEach((key) => {
+            const templateOption = template.options[key];
+            form += generateInput(templateOption);
+        });
+
+        form += "</form>";
 
         return form;
+    }
+
+    function generateInput(templateOption){
+        switch(templateOption.type){
+            case "text": {
+                return `
+                <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
+                <input type="text" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}"/>`;
+            }
+            default: {
+                console.log(`input type ${templateOption.type} was not handled`);
+                return "";
+            }
+        }
     }
 
     init();

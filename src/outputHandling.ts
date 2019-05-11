@@ -74,7 +74,7 @@ export function handleDotnetTemplateOutput(template: Template, output: string) {
 //   --no-restore   If specified, skips the automatic restore of the project on create.
 //                  bool - Optional
 //                  Default: false / (*) true
-const optionsRegex = /(.*?)(--.*?)\s+(.*?)\n(\s+((.*?) - (Optional|Required))|((\s+(.*?) - (.*?\n))+))\n?(\s+Default: (.*))?/;
+const optionsRegex = /(.*?)--(.*?)\s+(.*?)\n(\s+((.*?) - (Optional|Required))|((\s+(.*?) - (.*?\n))+))\n?(\s+Default: (.*))?/;
 function handleTemplateOptions(template: Template, options: string) {
     if (options === undefined) {
         return template;
@@ -84,7 +84,7 @@ function handleTemplateOptions(template: Template, options: string) {
     optionsList.forEach(opt => {
         const match = opt.match(optionsRegex);
         if (match !== null) {
-            const templateOption = createTemplateOption(match[3], match[4], match[6], match[7], match[13], match[8]);
+            const templateOption = createTemplateOption(match[2], match[3], match[6], match[7], match[13], match[8]);
             template.options[templateOption.parameter] = templateOption;
         } else {
             throw Error("matching failed for option: " + template.templateName);

@@ -21,7 +21,7 @@ suite("when parsing template output", function () {
     test("given console template should have two options", function () {
         const template = handleTemplate(testTemplates.consoleTemplate);
 
-        assert.equal(2, template.options.length);
+        assert.equal(5, Object.keys(template.options).length);
     });
 
     test("given angular template should have author 'Microsoft'", function () {
@@ -39,7 +39,7 @@ suite("when parsing template output", function () {
     test("given angular template should have three options", function () {
         const template = handleTemplate(testTemplates.angularTemplate);
 
-        assert.equal(3, template.options.length);
+        assert.equal(6, Object.keys(template.options).length);
     });
 
     test("given solution template should have author 'Microsoft'", function () {
@@ -54,10 +54,10 @@ suite("when parsing template output", function () {
         assert.equal("Create an empty solution containing no projects", template.description);
     });
 
-    test("given solution template should have no options", function () {
+    test("given solution template should have only default options", function () {
         const template = handleTemplate(testTemplates.solutionTemplate);
 
-        assert.equal(0, template.options.length);
+        assert.equal(3, Object.keys(template.options).length);
     });
 
     test("given mvc template should have author 'Microsoft'", function () {
@@ -75,43 +75,43 @@ suite("when parsing template output", function () {
     test("given mvc template should have 15 options", function () {
         const template = handleTemplate(testTemplates.mvcTemplate);
 
-        assert.equal(15, template.options.length);
+        assert.equal(18, Object.keys(template.options).length);
     });
 
-    test("given mvc template should have first option select", function () {
+    test("given mvc template should have 'auth' option select", function () {
         const template = handleTemplate(testTemplates.mvcTemplate);
 
-        assert.equal("select", template.options[0].type);
+        assert.equal("select", template.options["auth"].type);
     });
 
-    test("given mvc template should have first option select with 6 options", function () {
+    test("given mvc template should have 'auth' option with 6 options", function () {
         const template = handleTemplate(testTemplates.mvcTemplate);
 
-        assert.equal(6, template.options[0].selectOptions.length);
+        assert.equal(6, template.options["auth"].selectOptions.length);
     });
 
-    test("given mvc template should have first option select with first key 'None'", function () {
+    test("given mvc template should have 'auth' option with first key 'None'", function () {
         const template = handleTemplate(testTemplates.mvcTemplate);
 
-        assert.equal("None", template.options[0].selectOptions[0].key);
+        assert.equal("None", template.options["auth"].selectOptions[0].key);
     });
 
-    test("given mvc template should have first option select with first description 'No authentication'", function () {
+    test("given mvc template should have 'auth' option with first description 'No authentication'", function () {
         const template = handleTemplate(testTemplates.mvcTemplate);
 
-        assert.equal("No authentication", template.options[0].selectOptions[0].description);
+        assert.equal("No authentication", template.options["auth"].selectOptions[0].description);
     });
 
-    test("given mvc template should have second option string", function () {
+    test("given mvc template should have 'aad-b2c-instance' option string", function () {
         const template = handleTemplate(testTemplates.mvcTemplate);
 
-        assert.equal("string", template.options[1].type);
+        assert.equal("string", template.options["aad-b2c-instance"].type);
     });
 
-    test("given mvc template should have last option bool", function () {
+    test("given mvc template should have 'no-restore' option bool", function () {
         const template = handleTemplate(testTemplates.mvcTemplate);
 
-        assert.equal("bool", template.options[14].type);
+        assert.equal("bool", template.options["no-restore"].type);
     });
 });
 
