@@ -38,13 +38,24 @@ export function getTemplateView(templates: Template[]) {
             <tbody>`;
     templates.forEach(t => {
         template += `
-    <tr><td>${t.templateName}</td><td>${t.tags.join(' ')}</td></tr>
+    <tr class="template" id="${t.shortName}"><td>${t.templateName}</td><td>${t.tags.join(' ')}</td></tr>
     `;
     });
     template += `
             </tbody>
         </table>
     </body>
+    <script>
+        const vscode = acquireVsCodeApi();
+
+        document.getElementsByClass("template")
+            .addEventListener("click", (evt) => {
+                console.log(evt);
+                vscode.postMessage({
+                    template: evt.target
+                })
+            });
+    </script>
     </html>`;
     return template;
 }

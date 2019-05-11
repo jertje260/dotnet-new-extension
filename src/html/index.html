@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading templates</title>
+</head>
+
+<body>
+    <p id="loading">Loading templates, please wait</p>
+
+    <div id="templates" style="display: none;">
+        <table id="templateTable" style="width: 66%; display: inline-block">
+            <thead>
+                <tr>
+                    <th>
+                        Template Name
+                    </th>
+                    <th>
+                        Template Tags
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="templateBody">
+            </tbody>
+        </table>
+        <div id="template" style="width: 66%; display: inline-block">
+            <p id="loadingTemplate">Loading template</p>
+        </div>
+    </div>
+
+</body>
+<script>
+    const vscode = acquireVsCodeApi();
+
+    function init() {
+        initMessageHandling();
+        initEventHandling();
+        fetchTemplates();
+    }
+
+    function initMessageHandling() {
+        window.addEventListener('message', event => {
+
+            const message = event.data; // The JSON data our extension sent
+            console.log(message);
+            switch (message.command) {
+                case 'templates': {
+                    console.info('loading templates');
+                    loadTemplates(message.data);
+                    break;
+                }
+                case 'template': {
+                    console.info('load template');
+                    loadTemplate(message.data);
+                    break;
+                }
+            }
+        });
+    }
+
+    function initEventHandling() {
+        document.getElementById("templateBody").addEventListener("click", (evt) => {
+            console.log(evt);
+            if(evt.target.parentElement.localName === "tr"){
+                fetchTemplate(evt.target.parentElement.id);
+            }
+        });
+    }
+
+    function fetchTemplates() {
+        vscode.postMessage({
+            command: 'loadTemplates',
+            data: {}
+        });
+    }
+
+    function fetchTemplate(shortName){
+        vscode.postMessage({
+            command: 'loadTemplate',
+            data: shortName
+        });
+    }
+
+    function loadTemplates(templates) {
+        const tbody = document.getElementById("templateBody");
+        let template = "";
+        for (let i = 0; i < templates.length; i++) {
+            const t = templates[i];
+            template += `<tr class="template" id="${t.shortName}"><td>${t.templateName}</td><td>${t.tags.join(' ')}</td></tr>`;
+        }
+        tbody.innerHTML = template;
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("templates").style.display = "inline-block";
+    }
+
+    init();
+</script>
+
+</html>

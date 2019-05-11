@@ -65,6 +65,7 @@ export function handleDotnetTemplateOutput(template: Template, output: string) {
     } else {
         throw Error("matching failed for template: " + template.templateName);
     }
+    template.loaded = true;
     return template;
 }
 
