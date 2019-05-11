@@ -84,7 +84,8 @@ function handleTemplateOptions(template: Template, options: string) {
     optionsList.forEach(opt => {
         const match = opt.match(optionsRegex);
         if (match !== null) {
-            template.options.push(createTemplateOption(match[3], match[4], match[6], match[7], match[13], match[8]));
+            const templateOption = createTemplateOption(match[3], match[4], match[6], match[7], match[13], match[8]);
+            template.options[templateOption.parameter] = templateOption;
         } else {
             throw Error("matching failed for option: " + template.templateName);
         }

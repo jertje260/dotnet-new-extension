@@ -5,19 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading templates</title>
-    <style>
-        .container {
-            display: flex;
-        }
-
-        .fixed {
-            width: 66%;
-        }
-
-        .flex-item {
-            flex-grow: 1;
-        }
-    </style>
 </head>
 
 <body>
@@ -25,7 +12,7 @@
 
     <div id="templates" style="display: none;">
         <p>Click an item to see more information</p>
-        <table id="templateTable" style="width: 66%; display: inline-block">
+        <table id="template-table" style="width: 66%; display: inline-block">
             <thead>
                 <tr>
                     <th>
@@ -36,23 +23,26 @@
                     </th>
                 </tr>
             </thead>
-            <tbody id="templateBody">
+            <tbody id="template-body">
             </tbody>
         </table>
     </div>
     <div id="template" style="display: none;">
-        <button id="backToTemplates">Back to templates</button>
-        <p id="loadingTemplate">Loading template</p>
-        <div id="templateItem" style="display: none;">
+        <button id="back-to-templates">Back to templates</button>
+        <p id="loading-template">Loading template</p>
+        <div id="template-item" style="display: none;">
 
         </div>
-        <div id="templateButtons">
+        <div id="template-buttons">
             <button id="dryRun">Dry Run</button>
             <button id="create">Create</button>
         </div>
     </div>
     </div>
-
+    <form id=template-form>
+        <label for="template-name"></label>
+        <input id="template-name" type="text"/>
+    </form>
 </body>
 <script>
     const vscode = acquireVsCodeApi();
@@ -84,13 +74,13 @@
     }
 
     function initEventHandling() {
-        document.getElementById("templateBody").addEventListener("click", (evt) => {
+        document.getElementById("template-body").addEventListener("click", (evt) => {
             if (evt.target.parentElement.localName === "tr") {
                 fetchTemplate(evt.target.parentElement.id);
             }
         });
 
-        document.getElementById("backToTemplates").addEventListener("click", (evt) => {
+        document.getElementById("back-to-templates").addEventListener("click", (evt) => {
             // hide template, show templates
             showTemplatesBlock();
         });
@@ -115,8 +105,8 @@
 
     function fetchTemplate(shortName) {
         showTemplateBlock();
-        document.getElementById('loadingTemplate').style.display = "block";
-        document.getElementById('templateItem').style.display = "none";
+        document.getElementById('loading-template').style.display = "block";
+        document.getElementById('template-item').style.display = "none";
         vscode.postMessage({
             command: 'loadTemplate',
             data: shortName
@@ -124,7 +114,7 @@
     }
 
     function loadTemplates(templates) {
-        const tbody = document.getElementById("templateBody");
+        const tbody = document.getElementById("template-body");
         let template = "";
         for (let i = 0; i < templates.length; i++) {
             const t = templates[i];
@@ -136,7 +126,7 @@
     }
 
     function loadTemplate(template) {
-        const itemTemplate = document.getElementById('templateItem');
+        const itemTemplate = document.getElementById('template-item');
 
         let html = `
         <table>
@@ -162,12 +152,16 @@
 
         itemTemplate.innerHTML = html;
 
-        document.getElementById('loadingTemplate').style.display = "none";
+        document.getElementById('loading-template').style.display = "none";
         itemTemplate.style.display = "block";
     }
 
-    function generateForm(template){
-        return "";
+    function generateForm(template) {
+        let form = `
+        
+        `;
+
+        return form;
     }
 
     init();
