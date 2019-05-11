@@ -1,5 +1,5 @@
 import { Template } from "./template";
-import { TemplateOption } from "./templateOptions";
+import { TemplateOption, SelectOption } from "./templateOptions";
 
 const separator = "----------------------------------------------------------------------------------------------------------------------------";
 
@@ -95,7 +95,6 @@ function handleTemplateOptions(template: Template, options: string) {
 }
 
 const defaultValueBoolRegex = /(\(\*\))?[ ]?(.*?) \/ (\(\*\))?[ ]?(.*)/;
-const optionRegex = /(\s+(.*) - (.*))/;
 function createTemplateOption(
     parameter: string,
     description: string,
@@ -103,14 +102,30 @@ function createTemplateOption(
     optionalRequired: string,
     defaultValue: string,
     optionList: string) {
+
+    let selectOptions: SelectOption[] = [];
     if (type === "bool") {
         const match = defaultValue.match(defaultValueBoolRegex);
         if (match !== null) {
             defaultValue = match[1] !== undefined ? match[2] : match[4];
         }
     }
-    if(type === undefined && optionList !== undefined){
+    if (type === undefined && optionList !== undefined) {
         type = "select";
+        selectOptions = createSelectOptions(optionList);
     }
-    return new TemplateOption(parameter, description, type, optionalRequired === "Optional", defaultValue);
+    return new TemplateOption(parameter, description, type, optionalRequired === "Required", defaultValue, selectOptions);
+}
+
+const optionRegex = /(\s+(.*) - (.*))/;
+function createSelectOptions(optionList: string): SelectOption[] {
+    const options = optionList.split('\n');
+    let selections : SelectOption[] = [];
+    options.forEach((opt) =>{
+        const match = opt.trim().match(optionRegex);
+        if(match !== null){
+            selections.push({key: match[1], description: match[2]});
+        }
+    });
+    return selections;
 }
