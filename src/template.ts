@@ -13,7 +13,7 @@ export class Template {
         this.options["name"] = new TemplateOption(
             "name",
             "The name for the output being created. If no name is specified, the name of the current directory is used.",
-            "string",
+            "text",
             false,
             "",
             []
@@ -22,7 +22,7 @@ export class Template {
         this.options["output"] = new TemplateOption(
             "output",
             "Location to place the generated output.",
-            "string",
+            "text",
             false,
             "",
             []

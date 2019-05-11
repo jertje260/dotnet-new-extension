@@ -7,7 +7,13 @@ export class TemplateOption {
         public defaultValue: string,
         public selectOptions: SelectOption[]
     ) {
-        
+        this.parameter = this.parameter.trim();
+        if (this.description !== undefined) {
+            this.description = this.description.trim();
+        }
+        if (this.defaultValue !== undefined) {
+            this.defaultValue = this.defaultValue.trim();
+        }
     }
 }
 

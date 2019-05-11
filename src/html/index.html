@@ -5,6 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading templates</title>
+    <style>
+    input, label {
+        display: block;
+    }
+    </style>
 </head>
 
 <body>
@@ -156,9 +161,12 @@
         let form = "<form id=template-form>";
 
         const optionKeys = Object.keys(template.options);
+        console.log(optionKeys);
         optionKeys.forEach((key) => {
             const templateOption = template.options[key];
+            form += "<div>";
             form += generateInput(templateOption);
+            form += "</div>";
         });
 
         form += "</form>";
@@ -166,12 +174,22 @@
         return form;
     }
 
-    function generateInput(templateOption){
-        switch(templateOption.type){
+    function generateInput(templateOption) {
+        switch (templateOption.type) {
             case "text": {
                 return `
                 <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
                 <input type="text" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}"/>`;
+            }
+            case "select": {
+                let select = `
+                <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
+                <select id="template-form-${templateOption.parameter}" name="${templateOption.parameter}">`;
+                templateOption.selectOptions.forEach((opt) => {
+                    select += `<option value="${opt.key}" ${opt.key === templateOption.defaultValue ? "selected": ""}>${opt.description}</option>`
+                });
+                select += `</select>`;
+                return select;
             }
             default: {
                 console.log(`input type ${templateOption.type} was not handled`);
