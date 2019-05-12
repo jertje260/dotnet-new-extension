@@ -159,7 +159,7 @@
 
     function showOutput(output) {
         const outputDiv = document.getElementById("output");
-        outputDiv.innerHTML = output;
+        outputDiv.innerHTML = output.replace('\n', '<br/>');
         outputDiv.style.display = "block";
     }
 

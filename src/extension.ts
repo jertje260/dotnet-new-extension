@@ -7,6 +7,7 @@ import { TemplateManager } from './templateManager';
 import * as webviews from './webviews';
 import * as path from 'path';
 import * as fs from 'fs';
+import { CreateTemplate } from './createTemplate';
 
 
 
@@ -103,8 +104,23 @@ export function activate(context: vscode.ExtensionContext) {
 			});
 	}
 
-	function createTemplate(createObject: CreateTemplate){
-		
+	function createTemplate(createObject: CreateTemplate) {
+		commands.executeTemplateCreation(createObject)
+			.then((output) => {
+				console.info(output);
+				if (panel !== undefined) {
+					const message: Message = {
+						command: 'output',
+						data: output.stdout
+					};
+					panel.webview.postMessage(message);
+				} else {
+					vscode.window.showErrorMessage("No panel to display the template creation output");
+				}
+			})
+			.catch((err) => {
+				handleError(err);
+			});
 	}
 
 	function handleError(err: Error) {
@@ -125,9 +141,4 @@ export function deactivate() { }
 interface Message {
 	command: string;
 	data: any;
-}
-
-interface CreateTemplate {
-	template: string;
-	parameters: { [key: string]: string };
 }
