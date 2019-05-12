@@ -53,6 +53,11 @@ export function activate(context: vscode.ExtensionContext) {
 						loadTemplate(message.data);
 						break;
 					}
+					case "executeCreation": {
+						console.info('execute creation');
+						createTemplate(message.data);
+						break;
+					}
 				}
 			},
 			undefined,
@@ -98,6 +103,10 @@ export function activate(context: vscode.ExtensionContext) {
 			});
 	}
 
+	function createTemplate(createObject: CreateTemplate){
+		
+	}
+
 	function handleError(err: Error) {
 		if (panel !== undefined) {
 			panel.webview.html = webviews.getLoadingFailedView(err);
@@ -118,3 +127,7 @@ interface Message {
 	data: any;
 }
 
+interface CreateTemplate {
+	template: string;
+	parameters: { [key: string]: string };
+}

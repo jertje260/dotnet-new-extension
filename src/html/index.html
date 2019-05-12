@@ -6,9 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loading templates</title>
     <style>
-    input, label {
-        display: block;
-    }
+        input,
+        label {
+            display: block;
+        }
     </style>
 </head>
 
@@ -39,11 +40,11 @@
 
         </div>
         <div id="template-buttons">
-            <button id="dryRun">Dry Run</button>
+            <button id="dry-run">Dry Run</button>
             <button id="create">Create</button>
         </div>
     </div>
-    </div>
+    <div id="output" style="display: none;"></div>
 </body>
 <script>
     const vscode = acquireVsCodeApi();
@@ -70,6 +71,11 @@
                     loadTemplate(message.data);
                     break;
                 }
+                case 'output': {
+                    console.info('received output');
+                    showOutput(message.data);
+                    break;
+                }
             }
         });
     }
@@ -83,7 +89,16 @@
 
         document.getElementById("back-to-templates").addEventListener("click", (evt) => {
             // hide template, show templates
+            hideOutput();
             showTemplatesBlock();
+        });
+
+        document.getElementById("dry-run").addEventListener("click", (evt) => {
+            executeDryRun();
+        });
+
+        document.getElementById("create").addEventListener("click", (evt) => {
+            executeCreation();
         });
     }
 
@@ -91,6 +106,18 @@
         vscode.postMessage({
             command: 'loadTemplates',
             data: {}
+        });
+    }
+
+    function executeTemplateCreation(parameters) {
+        const template = document.getElementById("template-name").innerHTML;
+        console.log(template);
+        vscode.postMessage({
+            command: 'executeCreation',
+            data: {
+                template: template,
+                parameters: parameters
+            }
         });
     }
 
@@ -126,10 +153,21 @@
         document.getElementById("templates").style.display = "block";
     }
 
+    function hideOutput() {
+        document.getElementById("output").style.display = "none";
+    }
+
+    function showOutput(output) {
+        const outputDiv = document.getElementById("output");
+        outputDiv.innerHTML = output;
+        outputDiv.style.display = "block";
+    }
+
     function loadTemplate(template) {
         const itemTemplate = document.getElementById('template-item');
 
         let html = `
+        <div id="template-name" style="display:none;">${template.shortName}</div>
         <table>
             <tr>
                 <td>
@@ -158,10 +196,9 @@
     }
 
     function generateForm(template) {
-        let form = "<form id=template-form>";
+        let form = `<form id="template-form">`;
 
         const optionKeys = Object.keys(template.options);
-        console.log(optionKeys);
         optionKeys.forEach((key) => {
             const templateOption = template.options[key];
             form += "<div>";
@@ -177,24 +214,84 @@
     function generateInput(templateOption) {
         switch (templateOption.type) {
             case "text": {
-                return `
+                return `<div class="input-container">
                 <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
-                <input type="text" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}"/>`;
+                <input type="text" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}"/></div>`;
             }
             case "select": {
-                let select = `
+                let select = `<div class="input-container">
                 <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
                 <select id="template-form-${templateOption.parameter}" name="${templateOption.parameter}">`;
                 templateOption.selectOptions.forEach((opt) => {
-                    select += `<option value="${opt.key}" ${opt.key === templateOption.defaultValue ? "selected": ""}>${opt.description}</option>`
+                    select += `<option value="${opt.key}" ${opt.key === templateOption.defaultValue ? "selected" : ""}>${opt.description} (--${opt.key})</option>`
                 });
-                select += `</select>`;
+                select += `</select></div>`;
                 return select;
+            }
+            case "bool": {
+                return `<div class="input-container">
+                <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
+                <input type="checkbox" style="display: inline;" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}" ${templateOption.defaultValue === "true" ? "checked" : ""}/><div style="display: inline;">${templateOption.parameter.replace('-', ' ')}</div></div>`;
             }
             default: {
                 console.log(`input type ${templateOption.type} was not handled`);
                 return "";
             }
+        }
+    }
+
+    function executeCreation() {
+        const params = generateParameters();
+        executeTemplateCreation(params);
+    }
+
+    function executeDryRun() {
+        const params = generateParameters(true);
+        executeTemplateCreation(params);
+    }
+
+    function generateParameters(dryRun) {
+        const params = {};
+        if (dryRun) {
+            params["dry-run"] = "";
+        }
+
+        const inputElements = document.getElementsByTagName("input");
+        for (let i = 0; i < inputElements.length; i++) {
+            const param = inputElements[i].name;
+            if (inputElements[i].type === "checkbox") {
+                createParamForInput(params, param, inputElements[i].type, inputElements[i].checked);
+            } else {
+                createParamForInput(params, param, inputElements[i].type, inputElements[i].value);
+            }
+        }
+
+        const selectElements = document.getElementsByTagName("select");
+        for (let i = 0; i < selectElements.length; i++) {
+            const param = selectElements[i].name;
+            createParamForInput(params, param, selectElements[i].type, selectElements[i].value);
+        }
+        return params
+    }
+
+    function createParamForInput(params, parameter, type, value) {
+        console.log(parameter, type, value);
+        if (type === "checkbox") {
+            if (parameter === "force") {
+                if(value){
+                    params[parameter] = "";
+                }
+            } else {
+                params[parameter] = value ? "true" : "false";
+            }
+        }
+        if (type === "text") {
+            if (value !== "") {
+                params[parameter] = value;
+            }
+        }
+        if (type === "select-one") {
+            params[parameter] = value;
         }
     }
 
