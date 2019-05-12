@@ -45,6 +45,8 @@
         </div>
     </div>
     <div id="output" style="display: none;"></div>
+    <input type="file" id="filepicker" name="fileList" webkitdirectory />
+    <ul id="listing"></ul>
 </body>
 <script>
     const vscode = acquireVsCodeApi();
@@ -100,6 +102,18 @@
         document.getElementById("create").addEventListener("click", (evt) => {
             executeCreation();
         });
+
+        document.getElementById("filepicker").addEventListener("change", function (event) {
+            let output = document.getElementById("listing");
+            let files = event.target.files;
+
+            for (let i = 0; i < files.length; i++) {
+                let item = document.createElement("li");
+                console.log(files[i]);
+                item.innerHTML = files[i].path;
+                output.appendChild(item);
+            };
+        }, false);
     }
 
     function fetchTemplates() {
@@ -278,7 +292,7 @@
         console.log(parameter, type, value);
         if (type === "checkbox") {
             if (parameter === "force") {
-                if(value){
+                if (value) {
                     params[parameter] = "";
                 }
             } else {
