@@ -129,6 +129,8 @@ export function activate(context: vscode.ExtensionContext) {
 				.catch((err) => {
 					handleError(err);
 				});
+			} else {
+				// no path selected	
 			}
 		});
 		

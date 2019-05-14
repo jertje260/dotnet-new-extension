@@ -233,11 +233,6 @@
                 <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
                 <input type="checkbox" style="display: inline;" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}" ${templateOption.defaultValue === "true" ? "checked" : ""}/><div style="display: inline;">${templateOption.parameter.replace('-', ' ')}</div></div>`;
             }
-            case "path": {
-                return `<div class="input-container">
-                <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
-                <input type="file" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}" webkitdirectory/></div>`;
-            }
             default: {
                 console.log(`input type ${templateOption.type} was not handled`);
                 return "";
@@ -292,10 +287,6 @@
         }
         else if (element.type === "select-one") {
             params[parameter] = element.value;
-        }
-        else if (element.type === "file") {
-            console.log(element.path);
-            params[parameter] = element.path;
         }
     }
 

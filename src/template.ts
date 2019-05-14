@@ -19,15 +19,6 @@ export class Template {
             []
         );
 
-        this.options["output"] = new TemplateOption(
-            "output",
-            "Location to place the generated output.",
-            "path",
-            false,
-            "",
-            []
-        );
-
         this.options["force"] = new TemplateOption(
             "force",
             "Forces content to be generated even if it would change existing files.",
