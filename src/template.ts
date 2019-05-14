@@ -22,7 +22,7 @@ export class Template {
         this.options["output"] = new TemplateOption(
             "output",
             "Location to place the generated output.",
-            "text",
+            "path",
             false,
             "",
             []

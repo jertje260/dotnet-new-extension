@@ -45,8 +45,6 @@
         </div>
     </div>
     <div id="output" style="display: none;"></div>
-    <input type="file" id="filepicker" name="fileList" webkitdirectory />
-    <ul id="listing"></ul>
 </body>
 <script>
     const vscode = acquireVsCodeApi();
@@ -102,18 +100,6 @@
         document.getElementById("create").addEventListener("click", (evt) => {
             executeCreation();
         });
-
-        document.getElementById("filepicker").addEventListener("change", function (event) {
-            let output = document.getElementById("listing");
-            let files = event.target.files;
-
-            for (let i = 0; i < files.length; i++) {
-                let item = document.createElement("li");
-                console.log(files[i]);
-                item.innerHTML = files[i].path;
-                output.appendChild(item);
-            };
-        }, false);
     }
 
     function fetchTemplates() {
@@ -247,6 +233,11 @@
                 <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
                 <input type="checkbox" style="display: inline;" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}" ${templateOption.defaultValue === "true" ? "checked" : ""}/><div style="display: inline;">${templateOption.parameter.replace('-', ' ')}</div></div>`;
             }
+            case "path": {
+                return `<div class="input-container">
+                <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
+                <input type="file" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}" webkitdirectory/></div>`;
+            }
             default: {
                 console.log(`input type ${templateOption.type} was not handled`);
                 return "";
@@ -271,41 +262,40 @@
         }
 
         const inputElements = document.getElementsByTagName("input");
+        console.log(inputElements);
         for (let i = 0; i < inputElements.length; i++) {
-            const param = inputElements[i].name;
-            if (inputElements[i].type === "checkbox") {
-                createParamForInput(params, param, inputElements[i].type, inputElements[i].checked);
-            } else {
-                createParamForInput(params, param, inputElements[i].type, inputElements[i].value);
-            }
+            createParamForInput(params, inputElements[i]);
         }
 
         const selectElements = document.getElementsByTagName("select");
         for (let i = 0; i < selectElements.length; i++) {
-            const param = selectElements[i].name;
-            createParamForInput(params, param, selectElements[i].type, selectElements[i].value);
+            createParamForInput(params, selectElements[i]);
         }
         return params
     }
 
-    function createParamForInput(params, parameter, type, value) {
-        console.log(parameter, type, value);
-        if (type === "checkbox") {
-            if (parameter === "force") {
-                if (value) {
+    function createParamForInput(params, element) {
+        const parameter = element.name;
+        if (element.type === "checkbox") {
+            if (element.name === "force") {
+                if (element.checked) {
                     params[parameter] = "";
                 }
             } else {
-                params[parameter] = value ? "true" : "false";
+                params[parameter] = element.checked ? "true" : "false";
             }
         }
-        if (type === "text") {
-            if (value !== "") {
-                params[parameter] = value;
+        else if (element.type === "text") {
+            if (element.value !== "") {
+                params[parameter] = element.value;
             }
         }
-        if (type === "select-one") {
-            params[parameter] = value;
+        else if (element.type === "select-one") {
+            params[parameter] = element.value;
+        }
+        else if (element.type === "file") {
+            console.log(element.path);
+            params[parameter] = element.path;
         }
     }
 

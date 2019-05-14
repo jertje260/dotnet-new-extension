@@ -105,27 +105,39 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	function createTemplate(createObject: CreateTemplate) {
-		commands.executeTemplateCreation(createObject)
-			.then((output) => {
-				console.info(output);
-				if (panel !== undefined) {
-					const message: Message = {
-						command: 'output',
-						data: output.stdout
-					};
-					panel.webview.postMessage(message);
-				} else {
-					vscode.window.showErrorMessage("No panel to display the template creation output");
-				}
-			})
-			.catch((err) => {
-				handleError(err);
-			});
+		vscode.window.showOpenDialog({
+			canSelectFolders: true,
+			canSelectFiles: false,
+			canSelectMany: false,
+			openLabel: "Select folder"
+		}).then((paths)=>{
+			if(paths !== undefined){
+				createObject.parameters.output = paths[0].fsPath;
+				commands.executeTemplateCreation(createObject)
+				.then((output) => {
+					console.info(output);
+					if (panel !== undefined) {
+						const message: Message = {
+							command: 'output',
+							data: output.stdout
+						};
+						panel.webview.postMessage(message);
+					} else {
+						vscode.window.showErrorMessage("No panel to display the template creation output");
+					}
+				})
+				.catch((err) => {
+					handleError(err);
+				});
+			}
+		});
+		
 	}
 
 	function handleError(err: Error) {
+		console.error(err);
 		if (panel !== undefined) {
-			panel.webview.html = webviews.getLoadingFailedView(err);
+			panel.webview.html = webviews.getLoadingFailedView(JSON.stringify(err));
 		} else {
 			vscode.window.showErrorMessage(err.message);
 		}

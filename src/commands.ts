@@ -28,8 +28,9 @@ export function executeTemplateCreation(templateInformation: CreateTemplate){
 	keys.forEach(key => {
 		templateString += `--${key} `;
 		if(templateInformation.parameters[key] !== ""){
-			templateString += `"${templateInformation.parameters[key]}" `;
+			templateString += `${templateInformation.parameters[key]} `;
 		}
 	});
+	console.info(`executing ${templateString}`);
 	return exec(templateString, {});
 }
