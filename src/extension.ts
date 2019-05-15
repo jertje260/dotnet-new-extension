@@ -15,6 +15,7 @@ import { CreateTemplate } from './createTemplate';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	const templateManager = new TemplateManager();
+	let selectedPath: string | undefined = undefined;
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
@@ -56,7 +57,7 @@ export function activate(context: vscode.ExtensionContext) {
 					}
 					case "executeCreation": {
 						console.info('execute creation');
-						createTemplate(message.data);
+						addPathToTemplateCreation(message.data);
 						break;
 					}
 				}
@@ -67,6 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	function loadTemplates() {
+		selectedPath = undefined;
 		templateManager
 			.getTemplates()
 			.then((templates) => {
@@ -86,7 +88,7 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	function loadTemplate(shortName: string) {
-
+		selectedPath = undefined;
 		templateManager.loadTemplateInfo(shortName)
 			.then((template) => {
 				if (panel !== undefined) {
@@ -104,36 +106,49 @@ export function activate(context: vscode.ExtensionContext) {
 			});
 	}
 
-	function createTemplate(createObject: CreateTemplate) {
-		vscode.window.showOpenDialog({
-			canSelectFolders: true,
-			canSelectFiles: false,
-			canSelectMany: false,
-			openLabel: "Select folder"
-		}).then((paths)=>{
-			if(paths !== undefined){
-				createObject.parameters.output = paths[0].fsPath;
-				commands.executeTemplateCreation(createObject)
-				.then((output) => {
-					console.info(output);
-					if (panel !== undefined) {
-						const message: Message = {
-							command: 'output',
-							data: output.stdout
-						};
-						panel.webview.postMessage(message);
-					} else {
-						vscode.window.showErrorMessage("No panel to display the template creation output");
-					}
-				})
-				.catch((err) => {
-					handleError(err);
-				});
-			} else {
-				// no path selected	
+	function addPathToTemplateCreation(createObject: CreateTemplate) {
+		if (selectedPath !== undefined) {
+			createObject.parameters.output = selectedPath;
+			if (createObject.parameters["dry-run"] === undefined) {
+				selectedPath = undefined;
 			}
-		});
-		
+		} else {
+			vscode.window.showOpenDialog({
+				canSelectFolders: true,
+				canSelectFiles: false,
+				canSelectMany: false,
+				openLabel: "Select folder"
+			}).then((paths) => {
+				if (paths !== undefined) {
+					createObject.parameters.output = paths[0].fsPath;
+					if (createObject.parameters["dry-run"] !== undefined) {
+						selectedPath = createObject.parameters.output;
+					}
+					createTemplate(createObject);
+				} else {
+					// no path selected	
+				}
+			});
+		}
+
+	}
+
+	function createTemplate(createObject: CreateTemplate) {
+		commands.executeTemplateCreation(createObject)
+			.then((output) => {
+				if (panel !== undefined) {
+					const message: Message = {
+						command: 'output',
+						data: output.stdout
+					};
+					panel.webview.postMessage(message);
+				} else {
+					vscode.window.showErrorMessage("No panel to display the template creation output");
+				}
+			})
+			.catch((err) => {
+				handleError(err);
+			});
 	}
 
 	function handleError(err: Error) {
