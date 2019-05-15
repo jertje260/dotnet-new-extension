@@ -17,7 +17,7 @@
 		"commands": [
 			{
 				"command": "extension.selectTemplate",
-				"title": "Create new item from template"
+				"title": "dotnet new: Create new item from template"
 			}
 		]
 	},
