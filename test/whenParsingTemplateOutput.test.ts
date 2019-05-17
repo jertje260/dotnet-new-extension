@@ -1,6 +1,6 @@
 import * as assert from 'assert';
-import * as handler from '../outputHandling';
-import { Template } from '../template';
+import * as handler from '../src/outputHandling';
+import { Template } from '../src/template';
 import * as testTemplates from './testTemplates';
 
 // Defines a Mocha test suite to group tests of similar kind together
