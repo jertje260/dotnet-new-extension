@@ -14,7 +14,6 @@ This extension is dependent on the `dotnet new` CLI. It is tested with `dotnet c
 
 ## Known Issues
 
-UI is not pretty, nor implement the different styling for the different themes.
 
 ## Release Notes
 
@@ -22,3 +21,9 @@ UI is not pretty, nor implement the different styling for the different themes.
 ### 1.0.0
 
 Initial release of `dotnet-new-extension`.
+
+
+## Upcoming features
+
+- Theming based on the vs code themes
+- create template in folder from right click folder
