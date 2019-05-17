@@ -18,10 +18,10 @@ suite("when parsing template output", function () {
             template.description);
     });
 
-    test("given console template should have two options", function () {
+    test("given console template should have four options", function () {
         const template = handleTemplate(testTemplates.consoleTemplate);
 
-        assert.equal(5, Object.keys(template.options).length);
+        assert.equal(4, Object.keys(template.options).length);
     });
 
     test("given angular template should have author 'Microsoft'", function () {
@@ -36,10 +36,10 @@ suite("when parsing template output", function () {
         assert.equal("", template.description);
     });
 
-    test("given angular template should have three options", function () {
+    test("given angular template should have five options", function () {
         const template = handleTemplate(testTemplates.angularTemplate);
 
-        assert.equal(6, Object.keys(template.options).length);
+        assert.equal(5, Object.keys(template.options).length);
     });
 
     test("given solution template should have author 'Microsoft'", function () {
@@ -57,7 +57,7 @@ suite("when parsing template output", function () {
     test("given solution template should have only default options", function () {
         const template = handleTemplate(testTemplates.solutionTemplate);
 
-        assert.equal(3, Object.keys(template.options).length);
+        assert.equal(2, Object.keys(template.options).length);
     });
 
     test("given mvc template should have author 'Microsoft'", function () {
@@ -72,10 +72,10 @@ suite("when parsing template output", function () {
         assert.equal(`A project template for creating an ASP.NET Core application with example ASP.NET Core MVC Views and Controllers. This template can also be used for RESTful HTTP services. This template contains technologies from parties other than Microsoft, see https://aka.ms/aspnetcore-template-3pn-210 for details.`, template.description);
     });
 
-    test("given mvc template should have 15 options", function () {
+    test("given mvc template should have 17 options", function () {
         const template = handleTemplate(testTemplates.mvcTemplate);
 
-        assert.equal(18, Object.keys(template.options).length);
+        assert.equal(17, Object.keys(template.options).length);
     });
 
     test("given mvc template should have 'auth' option select", function () {
