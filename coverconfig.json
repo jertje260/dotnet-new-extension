@@ -9,7 +9,8 @@
     "reports": [
         "html",
         "lcov",
-        "text-summary"
+        "text-summary",
+        "cobertura"
     ],
     "verbose": false
 }

@@ -20,6 +20,15 @@ jobs:
           customCommand: 'run compile'
       - script: 'node node_modules/vscode/bin/test'
         displayName: 'Run tests'
+      # Publish Code Coverage Results
+      # Publish Cobertura or JaCoCo code coverage results from a build
+      - task: PublishCodeCoverageResults@1
+        inputs:
+          codeCoverageTool: 'cobertura' # Options: cobertura, jaCoCo
+          summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
+          #reportDirectory: # Optional
+          #additionalCodeCoverageFiles: # Optional
+          #failIfCoverageEmpty: false # Optional
   - job: macOS
     pool:
       name: Hosted macOS
