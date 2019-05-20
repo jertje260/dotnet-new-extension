@@ -97,8 +97,12 @@ stages:
           name: Hosted Ubuntu 1604
           demands: npm
         steps:
-          - script: 'npm install -g vsce'
-            displayName: "install vsce"
+          - task: Npm@1
+            displayName: 'Install vsce'
+            inputs:
+              command: custom
+              verbose: false
+              customCommand: 'install -g vsce'
           - script: 'vsce package'
             displayName: 'Pack extension'
           - task: CopyFiles@2
