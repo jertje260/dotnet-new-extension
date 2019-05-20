@@ -98,13 +98,14 @@ stages:
           demands: npm
         steps:
           - task: Npm@1
-            displayName: 'Install vsce'
+            displayName: 'Install'
+            inputs:
+              command: install
+          - task: Npm@1
+            displayName: 'Package'
             inputs:
               command: custom
-              verbose: false
-              customCommand: 'install -g vsce'
-          - script: 'vsce package'
-            displayName: 'Pack extension'
+              customCommand: 'run pack'
           - task: CopyFiles@2
             inputs:
               contents: 'dotnet-new-extension*.vsix'
