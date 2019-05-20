@@ -2,6 +2,11 @@
 	"name": "dotnet-new-extension",
 	"displayName": "dotnet-new-extension",
 	"description": "Extension to make it easier to create items from templates of the dotnet new templating engine",
+	"publisher": "jeroen-broekhuizen",
+	"icon": "",
+	"repository": {
+		"url": "https://github.com/jertje260/dotnet-new-extension"
+	},
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.33.0"
