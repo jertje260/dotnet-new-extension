@@ -108,7 +108,9 @@ stages:
               customCommand: 'run pack'
           - task: CopyFiles@2
             inputs:
-              contents: 'dotnet-new-extension*.vsix'
+              contents: |
+                "dotnet-new-extension*.vsix"
+                "package.json"
               targetFolder: $(Build.ArtifactStagingDirectory)
           - task: PublishBuildArtifacts@1
             inputs:
