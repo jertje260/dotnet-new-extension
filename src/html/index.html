@@ -47,126 +47,128 @@
     <div id="output" style="display: none;"></div>
 </body>
 <script>
-    const vscode = acquireVsCodeApi();
+    (function () {
 
-    function init() {
-        initMessageHandling();
-        initEventHandling();
-        fetchTemplates();
-    }
+        const vscode = acquireVsCodeApi();
 
-    function initMessageHandling() {
-        window.addEventListener('message', event => {
-
-            const message = event.data; // The JSON data our extension sent
-            console.log(message);
-            switch (message.command) {
-                case 'templates': {
-                    console.info('loading templates');
-                    loadTemplates(message.data);
-                    break;
-                }
-                case 'template': {
-                    console.info('load template');
-                    loadTemplate(message.data);
-                    break;
-                }
-                case 'output': {
-                    console.info('received output');
-                    showOutput(message.data);
-                    break;
-                }
-            }
-        });
-    }
-
-    function initEventHandling() {
-        document.getElementById("template-body").addEventListener("click", (evt) => {
-            if (evt.target.parentElement.localName === "tr") {
-                fetchTemplate(evt.target.parentElement.id);
-            }
-        });
-
-        document.getElementById("back-to-templates").addEventListener("click", (evt) => {
-            // hide template, show templates
-            hideOutput();
-            showTemplatesBlock();
-        });
-
-        document.getElementById("dry-run").addEventListener("click", (evt) => {
-            executeDryRun();
-        });
-
-        document.getElementById("create").addEventListener("click", (evt) => {
-            executeCreation();
-        });
-    }
-
-    function fetchTemplates() {
-        vscode.postMessage({
-            command: 'loadTemplates',
-            data: {}
-        });
-    }
-
-    function executeTemplateCreation(parameters) {
-        const template = document.getElementById("template-name").innerHTML;
-        console.log(template);
-        vscode.postMessage({
-            command: 'executeCreation',
-            data: {
-                template: template,
-                parameters: parameters
-            }
-        });
-    }
-
-    function showTemplateBlock() {
-        document.getElementById("templates").style.display = "none";
-        document.getElementById("template").style.display = "block"
-    }
-
-    function showTemplatesBlock() {
-        document.getElementById("template").style.display = "none";
-        document.getElementById("templates").style.display = "block"
-    }
-
-    function fetchTemplate(shortName) {
-        showTemplateBlock();
-        document.getElementById('loading-template').style.display = "block";
-        document.getElementById('template-item').style.display = "none";
-        vscode.postMessage({
-            command: 'loadTemplate',
-            data: shortName
-        });
-    }
-
-    function loadTemplates(templates) {
-        const tbody = document.getElementById("template-body");
-        let template = "";
-        for (let i = 0; i < templates.length; i++) {
-            const t = templates[i];
-            template += `<tr class="template" id="${t.shortName}"><td>${t.templateName}</td><td>${t.tags.join(' ')}</td></tr>`;
+        function init() {
+            initMessageHandling();
+            initEventHandling();
+            fetchTemplates();
         }
-        tbody.innerHTML = template;
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("templates").style.display = "block";
-    }
 
-    function hideOutput() {
-        document.getElementById("output").style.display = "none";
-    }
+        function initMessageHandling() {
+            window.addEventListener('message', event => {
 
-    function showOutput(output) {
-        const outputDiv = document.getElementById("output");
-        outputDiv.innerHTML = output.replace('\n', '<br/>');
-        outputDiv.style.display = "block";
-    }
+                const message = event.data; // The JSON data our extension sent
+                console.log(message);
+                switch (message.command) {
+                    case 'templates': {
+                        console.info('loading templates');
+                        loadTemplates(message.data);
+                        break;
+                    }
+                    case 'template': {
+                        console.info('load template');
+                        loadTemplate(message.data);
+                        break;
+                    }
+                    case 'output': {
+                        console.info('received output');
+                        showOutput(message.data);
+                        break;
+                    }
+                }
+            });
+        }
 
-    function loadTemplate(template) {
-        const itemTemplate = document.getElementById('template-item');
+        function initEventHandling() {
+            document.getElementById("template-body").addEventListener("click", (evt) => {
+                if (evt.target.parentElement.localName === "tr") {
+                    fetchTemplate(evt.target.parentElement.id);
+                }
+            });
 
-        let html = `
+            document.getElementById("back-to-templates").addEventListener("click", (evt) => {
+                // hide template, show templates
+                hideOutput();
+                showTemplatesBlock();
+            });
+
+            document.getElementById("dry-run").addEventListener("click", (evt) => {
+                executeDryRun();
+            });
+
+            document.getElementById("create").addEventListener("click", (evt) => {
+                executeCreation();
+            });
+        }
+
+        function fetchTemplates() {
+            vscode.postMessage({
+                command: 'loadTemplates',
+                data: {}
+            });
+        }
+
+        function executeTemplateCreation(parameters) {
+            const template = document.getElementById("template-name").innerHTML;
+            console.log(template);
+            vscode.postMessage({
+                command: 'executeCreation',
+                data: {
+                    template: template,
+                    parameters: parameters
+                }
+            });
+        }
+
+        function showTemplateBlock() {
+            document.getElementById("templates").style.display = "none";
+            document.getElementById("template").style.display = "block"
+        }
+
+        function showTemplatesBlock() {
+            document.getElementById("template").style.display = "none";
+            document.getElementById("templates").style.display = "block"
+        }
+
+        function fetchTemplate(shortName) {
+            showTemplateBlock();
+            document.getElementById('loading-template').style.display = "block";
+            document.getElementById('template-item').style.display = "none";
+            vscode.postMessage({
+                command: 'loadTemplate',
+                data: shortName
+            });
+        }
+
+        function loadTemplates(templates) {
+            const tbody = document.getElementById("template-body");
+            let template = "";
+            for (let i = 0; i < templates.length; i++) {
+                const t = templates[i];
+                template += `<tr class="template" id="${t.shortName}"><td>${t.templateName}</td><td>${t.tags.join(' ')}</td></tr>`;
+            }
+            tbody.innerHTML = template;
+            document.getElementById("loading").style.display = "none";
+            document.getElementById("templates").style.display = "block";
+        }
+
+        function hideOutput() {
+            document.getElementById("output").style.display = "none";
+        }
+
+        function showOutput(output) {
+            const outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = output.replace('\n', '<br/>');
+            outputDiv.style.display = "block";
+        }
+
+        function loadTemplate(template) {
+            const itemTemplate = document.getElementById('template-item');
+
+            let html = `
         <div id="template-name" style="display:none;">${template.shortName}</div>
         <table>
             <tr>
@@ -187,110 +189,111 @@
             </tr>
         </table>`;
 
-        html += generateForm(template);
+            html += generateForm(template);
 
-        itemTemplate.innerHTML = html;
+            itemTemplate.innerHTML = html;
 
-        document.getElementById('loading-template').style.display = "none";
-        itemTemplate.style.display = "block";
-    }
+            document.getElementById('loading-template').style.display = "none";
+            itemTemplate.style.display = "block";
+        }
 
-    function generateForm(template) {
-        let form = `<form id="template-form">`;
+        function generateForm(template) {
+            let form = `<form id="template-form">`;
 
-        const optionKeys = Object.keys(template.options);
-        optionKeys.forEach((key) => {
-            const templateOption = template.options[key];
-            form += "<div>";
-            form += generateInput(templateOption);
-            form += "</div>";
-        });
+            const optionKeys = Object.keys(template.options);
+            optionKeys.forEach((key) => {
+                const templateOption = template.options[key];
+                form += "<div>";
+                form += generateInput(templateOption);
+                form += "</div>";
+            });
 
-        form += "</form>";
+            form += "</form>";
 
-        return form;
-    }
+            return form;
+        }
 
-    function generateInput(templateOption) {
-        switch (templateOption.type) {
-            case "text": {
-                return `<div class="input-container">
+        function generateInput(templateOption) {
+            switch (templateOption.type) {
+                case "text": {
+                    return `<div class="input-container">
                 <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
                 <input type="text" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}"/></div>`;
-            }
-            case "select": {
-                let select = `<div class="input-container">
+                }
+                case "select": {
+                    let select = `<div class="input-container">
                 <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
                 <select id="template-form-${templateOption.parameter}" name="${templateOption.parameter}">`;
-                templateOption.selectOptions.forEach((opt) => {
-                    select += `<option value="${opt.key}" ${opt.key === templateOption.defaultValue ? "selected" : ""}>${opt.description} (--${opt.key})</option>`
-                });
-                select += `</select></div>`;
-                return select;
-            }
-            case "bool": {
-                return `<div class="input-container">
+                    templateOption.selectOptions.forEach((opt) => {
+                        select += `<option value="${opt.key}" ${opt.key === templateOption.defaultValue ? "selected" : ""}>${opt.description} (--${opt.key})</option>`
+                    });
+                    select += `</select></div>`;
+                    return select;
+                }
+                case "bool": {
+                    return `<div class="input-container">
                 <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
                 <input type="checkbox" style="display: inline;" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}" ${templateOption.defaultValue === "true" ? "checked" : ""}/><div style="display: inline;">${templateOption.parameter.replace('-', ' ')}</div></div>`;
-            }
-            default: {
-                console.log(`input type ${templateOption.type} was not handled`);
-                return "";
-            }
-        }
-    }
-
-    function executeCreation() {
-        const params = generateParameters();
-        executeTemplateCreation(params);
-    }
-
-    function executeDryRun() {
-        const params = generateParameters(true);
-        executeTemplateCreation(params);
-    }
-
-    function generateParameters(dryRun) {
-        const params = {};
-        if (dryRun) {
-            params["dry-run"] = "";
-        }
-
-        const inputElements = document.getElementsByTagName("input");
-        console.log(inputElements);
-        for (let i = 0; i < inputElements.length; i++) {
-            createParamForInput(params, inputElements[i]);
-        }
-
-        const selectElements = document.getElementsByTagName("select");
-        for (let i = 0; i < selectElements.length; i++) {
-            createParamForInput(params, selectElements[i]);
-        }
-        return params
-    }
-
-    function createParamForInput(params, element) {
-        const parameter = element.name;
-        if (element.type === "checkbox") {
-            if (element.name === "force") {
-                if (element.checked) {
-                    params[parameter] = "";
                 }
-            } else {
-                params[parameter] = element.checked ? "true" : "false";
+                default: {
+                    console.log(`input type ${templateOption.type} was not handled`);
+                    return "";
+                }
             }
         }
-        else if (element.type === "text") {
-            if (element.value !== "") {
+
+        function executeCreation() {
+            const params = generateParameters();
+            executeTemplateCreation(params);
+        }
+
+        function executeDryRun() {
+            const params = generateParameters(true);
+            executeTemplateCreation(params);
+        }
+
+        function generateParameters(dryRun) {
+            const params = {};
+            if (dryRun) {
+                params["dry-run"] = "";
+            }
+
+            const inputElements = document.getElementsByTagName("input");
+            console.log(inputElements);
+            for (let i = 0; i < inputElements.length; i++) {
+                createParamForInput(params, inputElements[i]);
+            }
+
+            const selectElements = document.getElementsByTagName("select");
+            for (let i = 0; i < selectElements.length; i++) {
+                createParamForInput(params, selectElements[i]);
+            }
+            return params
+        }
+
+        function createParamForInput(params, element) {
+            const parameter = element.name;
+            if (element.type === "checkbox") {
+                if (element.name === "force") {
+                    if (element.checked) {
+                        params[parameter] = "";
+                    }
+                } else {
+                    params[parameter] = element.checked ? "true" : "false";
+                }
+            }
+            else if (element.type === "text") {
+                if (element.value !== "") {
+                    params[parameter] = element.value;
+                }
+            }
+            else if (element.type === "select-one") {
                 params[parameter] = element.value;
             }
         }
-        else if (element.type === "select-one") {
-            params[parameter] = element.value;
-        }
-    }
 
-    init();
+        init();
+    })();
 </script>
 
 </html>
