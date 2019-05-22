@@ -90,9 +90,9 @@ stages:
               codeCoverageTool: 'cobertura' # Options: cobertura, jaCoCo
               summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
   - stage:
-    displayName: "Package"
+    displayName: "Publish extension"
     jobs:
-      - job: Package
+      - job: "Publish extension"
         pool:
           name: Hosted Ubuntu 1604
           demands: npm
@@ -102,17 +102,7 @@ stages:
             inputs:
               command: install
           - task: Npm@1
-            displayName: 'Package'
+            displayName: 'publish'
             inputs:
               command: custom
-              customCommand: 'run pack'
-          - task: CopyFiles@2
-            inputs:
-              contents: |
-                "dotnet-new-extension*.vsix"
-                "package.json"
-              targetFolder: $(Build.ArtifactStagingDirectory)
-          - task: PublishBuildArtifacts@1
-            inputs:
-              pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-              artifactName: extension
+              customCommand: 'run publish -p $(TOKEN)'
