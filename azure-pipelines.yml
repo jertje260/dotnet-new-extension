@@ -92,7 +92,7 @@ stages:
   - stage:
     displayName: "Publish extension"
     jobs:
-      - job: "Publish extension"
+      - job: "Publish"
         pool:
           name: Hosted Ubuntu 1604
           demands: npm
