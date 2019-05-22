@@ -105,4 +105,4 @@ stages:
             displayName: 'publish'
             inputs:
               command: custom
-              customCommand: 'run publish -p $(TOKEN)'
+              customCommand: 'run publish -- -p $(TOKEN)'
