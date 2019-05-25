@@ -10,6 +10,51 @@
         label {
             display: block;
         }
+
+        body {
+            color: var(--vscode-editor-foreground);
+            background-color: var(--vscode-editor-background);
+        }
+
+        button {
+            color: var(--vscode-button-foreground);
+            background-color: var(--vscode-button-background);
+        }
+
+        input[type="text"] {
+            color: var(--vscode-input-foreground);
+            background-color: var(--vscode-input-background);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--vscode-input-placehoder-foreground);
+        }
+
+        select {
+            background-color: var(--vscode-dropdown-brackground);
+            color: var(--vscode-dropdown-foreground);
+            border-color: var(--vscode-dropdown-border)
+        }
+
+        option {
+            color: var(--vscode-dropdown-foreground);
+            background-color: var(--vscode-dropdown-listBackground);
+        }
+
+        #template-table>tbody>tr {
+            background-color: var(--vscode-list-hoverBackground);
+            color: var(--vscode-list-hoverForeground);
+        }
+
+        #template-table>tbody>tr:hover {
+            background-color: var(--vscode-list-focusBackground);
+            color: var(--vscode-list-focusForeground);
+        }
+
+        table {
+            /* border-collapse: collapse; */
+        }
+
     </style>
 </head>
 
