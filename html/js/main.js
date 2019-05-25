@@ -189,9 +189,15 @@
                 }
             case "bool":
                 {
-                    return `<div class="input-container">
-            <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
-            <input type="checkbox" style="display: inline;" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}" ${templateOption.defaultValue === "true" ? "checked" : ""}/><div style="display: inline;">${templateOption.parameter.replace('-', ' ')}</div></div>`;
+                    return `
+                    <div class="input-container">
+                        <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
+                        <label class="checkbox-container">
+                            ${templateOption.parameter.replace('-', ' ')}
+                            <input type="checkbox" id="template-form-${templateOption.parameter}" name="${templateOption.parameter}" ${templateOption.defaultValue === "true" ? "checked" : ""}/>
+                            <span class="checkmark"></span>
+                        </label>
+                    </div>`;
                 }
             default:
                 {

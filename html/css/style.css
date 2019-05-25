@@ -15,9 +15,11 @@ button {
     color: var(--vscode-button-foreground);
     background-color: var(--vscode-button-background);
     border: none;
-    padding: 5px;
+    padding: 5px 15px;
+    margin: 5px 10px 5px 0px;
     text-align: center;
     text-decoration: none;
+    cursor: pointer;
 }
 
 input[type="text"] {
@@ -30,16 +32,12 @@ input[type="text"]::placeholder {
     color: var(--vscode-input-placehoder-foreground);
 }
 
-.input-container label {
-    padding: 1px 0px;
-}
-
 .input-container {
     padding: 4px 0px;
 }
 
 
-/* #region */
+/* #region Custom Select */
 
 .select {
     position: relative;
@@ -82,8 +80,7 @@ input[type="text"]::placeholder {
 
 .select-items div,
 .select-selected {
-    /* color: #ffffff; */
-    padding: 8px 16px;
+    padding: 4px 8px;
     border: none;
     cursor: pointer;
 }
@@ -116,6 +113,81 @@ input[type="text"]::placeholder {
 
 
 /* #endregion */
+
+
+/* #region Custom Checkbox */
+
+
+/* Customize the label (the container) */
+
+.checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 22px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+/* Hide the browser's default checkbox */
+
+.checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+
+/* Create a custom checkbox */
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 18px;
+    width: 18px;
+    background-color: var(--vscode-settings-checkboxBackground);
+}
+
+
+/* Create the checkmark/indicator (hidden when not checked) */
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+
+/* Show the checkmark when checked */
+
+.checkbox-container input:checked~.checkmark:after {
+    display: block;
+}
+
+
+/* Style the checkmark/indicator */
+
+.checkbox-container .checkmark:after {
+    left: 6px;
+    top: 3px;
+    width: 4px;
+    height: 8px;
+    border: solid var(--vscode-settings-checkboxForeground);
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+
+
+/* #endRegion */
 
 option {
     color: var(--vscode-dropdown-foreground);
