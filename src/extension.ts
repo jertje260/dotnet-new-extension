@@ -41,7 +41,12 @@ export function activate(context: vscode.ExtensionContext) {
 		);
 
 		const filePath: vscode.Uri = vscode.Uri.file(path.join(context.extensionPath, 'html', 'index.html'));
-		panel.webview.html = fs.readFileSync(filePath.fsPath, 'utf8');
+		const basePath: vscode.Uri = vscode.Uri.file(path.join(context.extensionPath, 'html'));
+		
+		let html = fs.readFileSync(filePath.fsPath, 'utf8');
+		const resource = basePath.with({ scheme: 'vscode-resource'});
+		html = html.replace(/{{baseUrl}}/g, `${resource.scheme}:${resource.path}`);
+		panel.webview.html = html;
 
 		panel.webview.onDidReceiveMessage(
 			(message: Message) => {
