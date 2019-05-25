@@ -22,6 +22,9 @@ This extension is dependent on the `dotnet new` CLI. It is tested with `dotnet c
 
 Initial release of `dotnet-new-extension`.
 
+### 1.0.1
+
+Fixed issue where the html wasn't packaged properly, now it does work.
 
 ## Upcoming features
 

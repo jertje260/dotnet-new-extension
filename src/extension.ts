@@ -27,6 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.selectTemplate', () => {
 		// The code you place here will be executed every time your command is executed
+		try{
 		panel = vscode.window.createWebviewPanel(
 			'templateSelector',
 			'Select your template',
@@ -34,12 +35,12 @@ export function activate(context: vscode.ExtensionContext) {
 			{
 				enableScripts: true,
 				localResourceRoots: [
-					vscode.Uri.file(path.join(context.extensionPath, 'src', 'html')),
+					vscode.Uri.file(path.join(context.extensionPath, 'html')),
 				]
 			}
 		);
 
-		const filePath: vscode.Uri = vscode.Uri.file(path.join(context.extensionPath, 'src', 'html', 'index.html'));
+		const filePath: vscode.Uri = vscode.Uri.file(path.join(context.extensionPath, 'html', 'index.html'));
 		panel.webview.html = fs.readFileSync(filePath.fsPath, 'utf8');
 
 		panel.webview.onDidReceiveMessage(
@@ -65,6 +66,9 @@ export function activate(context: vscode.ExtensionContext) {
 			undefined,
 			context.subscriptions
 		);
+		} catch (e){
+			console.error(e);
+		}
 	});
 
 	function loadTemplates() {
