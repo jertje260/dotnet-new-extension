@@ -8,7 +8,7 @@ body {
     background-color: var(--vscode-editor-background);
     margin: 10px;
     /* remove me when this is fixed in vscode */
-    --vscode-list-inactiveSelectionForeground: var(--vscode-list-activeSelectionForeground)
+    --vscode-list-inactiveSelectionForeground: var(--vscode-input-foreground)
 }
 
 button {
@@ -26,6 +26,8 @@ input[type="text"] {
     color: var(--vscode-input-foreground);
     background-color: var(--vscode-input-background);
     border: none;
+    margin-top: 3px;
+    padding: 4px;
 }
 
 input[type="text"]::placeholder {
@@ -49,8 +51,8 @@ input[type="text"]::placeholder {
 }
 
 .select-selected {
-    background-color: var(--vscode-list-inactiveSelectionBackground);
-    color: var(--vscode-list-inactiveSelectionForeground);
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
 }
 
 
@@ -64,14 +66,14 @@ input[type="text"]::placeholder {
     width: 0;
     height: 0;
     border: 6px solid transparent;
-    border-color: var(--vscode-list-inactiveSelectionForeground) transparent transparent transparent;
+    border-color: var(--vscode-input-foreground) transparent transparent transparent;
 }
 
 
 /* Point the arrow upwards when the select box is open (active): */
 
 .select-selected.select-arrow-active:after {
-    border-color: transparent transparent var(--vscode-list-inactiveSelectionForeground) transparent;
+    border-color: transparent transparent var(--vscode-input-foreground) transparent;
     top: 7px;
 }
 
@@ -90,8 +92,8 @@ input[type="text"]::placeholder {
 
 .select-items {
     position: absolute;
-    background-color: var(--vscode-list-inactiveSelectionBackground);
-    color: var(--vscode-list-inactiveSelectionForeground);
+    background-color: var(--vscode-input-background);
+    color: var(--vscode-input-foreground);
     top: 100%;
     left: 0;
     right: 0;
@@ -124,7 +126,7 @@ input[type="text"]::placeholder {
     display: block;
     position: relative;
     padding-left: 22px;
-    margin-bottom: 12px;
+    margin-top: 3px;
     cursor: pointer;
     -webkit-user-select: none;
     -moz-user-select: none;
@@ -152,7 +154,7 @@ input[type="text"]::placeholder {
     left: 0;
     height: 18px;
     width: 18px;
-    background-color: var(--vscode-settings-checkboxBackground);
+    background-color: var(--vscode-input-background);
 }
 
 
@@ -179,7 +181,7 @@ input[type="text"]::placeholder {
     top: 3px;
     width: 4px;
     height: 8px;
-    border: solid var(--vscode-settings-checkboxForeground);
+    border: solid var(--vscode-input-foreground);
     border-width: 0 3px 3px 0;
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
@@ -190,13 +192,18 @@ input[type="text"]::placeholder {
 /* #endRegion */
 
 option {
-    color: var(--vscode-dropdown-foreground);
-    background-color: var(--vscode-dropdown-listBackground);
+    color: var(--vscode-input-foreground);
+    background-color: var(--vscode-input-background);
 }
 
 #template-table>tbody>tr:hover {
     background-color: var(--vscode-list-hoverBackground);
     color: var(--vscode-list-hoverForeground);
+}
+
+#template-table td,
+#template-table th {
+    padding: 5px;
 }
 
 table {
@@ -205,6 +212,14 @@ table {
 
 #template-item {
     margin: 10px 0px;
+}
+
+#template-item table {
+    margin-left: -5px;
+}
+
+#template-item td {
+    padding: 5px;
 }
 
 #template-table {

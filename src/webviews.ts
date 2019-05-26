@@ -69,7 +69,7 @@ export function getLoadingFailedView(err: any) {
         <title>Loading</title>
     </head>
     <body>
-        <p>template loading failed</p>
+        <p>Oopsie doopsie made a fucky wucky, please notify the code monkeys about this error at: <a href="https://github.com/jertje260/dotnet-new-extension/issues">github</a></p>
         <p>${err}</p>
     </body>
     </html>`;

@@ -2,7 +2,6 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import * as commands from './commands';
-import * as handle from './outputHandling';
 import { TemplateManager } from './templateManager';
 import * as webviews from './webviews';
 import * as path from 'path';
@@ -17,9 +16,6 @@ export function activate(context: vscode.ExtensionContext) {
 	const templateManager = new TemplateManager();
 	let selectedPath: string | undefined = undefined;
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "dotnet-new-extension" is now active!');
 	let panel: vscode.WebviewPanel | undefined = undefined;
 
 	// The command has been defined in the package.json file
@@ -27,51 +23,55 @@ export function activate(context: vscode.ExtensionContext) {
 	// The commandId parameter must match the command field in package.json
 	let disposable = vscode.commands.registerCommand('extension.selectTemplate', () => {
 		// The code you place here will be executed every time your command is executed
-		try{
-		panel = vscode.window.createWebviewPanel(
-			'templateSelector',
-			'Select your template',
-			vscode.ViewColumn.One,
-			{
-				enableScripts: true,
-				localResourceRoots: [
-					vscode.Uri.file(path.join(context.extensionPath, 'html')),
-				]
-			}
-		);
-
-		const filePath: vscode.Uri = vscode.Uri.file(path.join(context.extensionPath, 'html', 'index.html'));
-		const basePath: vscode.Uri = vscode.Uri.file(path.join(context.extensionPath, 'html'));
-		
-		let html = fs.readFileSync(filePath.fsPath, 'utf8');
-		const resource = basePath.with({ scheme: 'vscode-resource'});
-		html = html.replace(/{{baseUrl}}/g, `${resource.scheme}:${resource.path}`);
-		panel.webview.html = html;
-
-		panel.webview.onDidReceiveMessage(
-			(message: Message) => {
-				switch (message.command) {
-					case "loadTemplates": {
-						console.info('loading templates');
-						loadTemplates();
-						break;
-					}
-					case "loadTemplate": {
-						console.info('loading template');
-						loadTemplate(message.data);
-						break;
-					}
-					case "executeCreation": {
-						console.info('execute creation');
-						addPathToTemplateCreation(message.data);
-						break;
-					}
+		try {
+			panel = vscode.window.createWebviewPanel(
+				'templateSelector',
+				'Select your template',
+				vscode.ViewColumn.One,
+				{
+					enableScripts: true,
+					localResourceRoots: [
+						vscode.Uri.file(path.join(context.extensionPath, 'html')),
+					]
 				}
-			},
-			undefined,
-			context.subscriptions
-		);
-		} catch (e){
+			);
+
+			const filePath: vscode.Uri = vscode.Uri.file(path.join(context.extensionPath, 'html', 'index.html'));
+			const basePath: vscode.Uri = vscode.Uri.file(path.join(context.extensionPath, 'html'));
+
+			let html = fs.readFileSync(filePath.fsPath, 'utf8');
+			const resource = basePath.with({ scheme: 'vscode-resource' });
+			html = html.replace(/{{baseUrl}}/g, `${resource.scheme}:${resource.path}`);
+			panel.webview.html = html;
+
+			panel.webview.onDidReceiveMessage(
+				(message: Message) => {
+					switch (message.command) {
+						case "loadTemplates": {
+							if (panel !== undefined) {
+								panel.title = 'Select your template';
+								loadTemplates();
+							}
+							break;
+						}
+						case "loadTemplate": {
+							if (panel !== undefined) {
+								panel.title = `Create ${message.data}`;
+								loadTemplate(message.data);
+							}
+							break;
+						}
+						case "executeCreation": {
+							addPathToTemplateCreation(message.data);
+							break;
+						}
+					}
+				},
+				undefined,
+				context.subscriptions
+			);
+		} catch (e) {
+			vscode.window.showErrorMessage("Something unexpected happened while trying to start extension", e);
 			console.error(e);
 		}
 	});
@@ -161,11 +161,14 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	function handleError(err: Error) {
-		console.error(err);
 		if (panel !== undefined) {
 			panel.webview.html = webviews.getLoadingFailedView(JSON.stringify(err));
 		} else {
-			vscode.window.showErrorMessage(err.message);
+			if (err.stack !== undefined) {
+				vscode.window.showErrorMessage(err.stack);
+			} else {
+				vscode.window.showErrorMessage(err.message);
+			}
 		}
 	}
 
