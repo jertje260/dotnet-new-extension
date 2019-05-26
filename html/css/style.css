@@ -7,8 +7,9 @@ body {
     color: var(--vscode-editor-foreground);
     background-color: var(--vscode-editor-background);
     margin: 10px;
-    /* remove me when this is fixed in vscode */
-    --vscode-list-inactiveSelectionForeground: var(--vscode-input-foreground)
+    font-size: var(--vscode-editor-font-size);
+    font-family: var(--vscode-editor-font-family);
+    user-select: none;
 }
 
 button {
@@ -61,7 +62,7 @@ input[type="text"]::placeholder {
 .select-selected:after {
     position: absolute;
     content: "";
-    top: 14px;
+    top: 10px;
     right: 10px;
     width: 0;
     height: 0;
@@ -74,7 +75,7 @@ input[type="text"]::placeholder {
 
 .select-selected.select-arrow-active:after {
     border-color: transparent transparent var(--vscode-input-foreground) transparent;
-    top: 7px;
+    top: 4px;
 }
 
 
@@ -191,11 +192,6 @@ input[type="text"]::placeholder {
 
 /* #endRegion */
 
-option {
-    color: var(--vscode-input-foreground);
-    background-color: var(--vscode-input-background);
-}
-
 #template-table>tbody>tr:hover {
     background-color: var(--vscode-list-hoverBackground);
     color: var(--vscode-list-hoverForeground);
@@ -212,6 +208,8 @@ table {
 
 #template-item {
     margin: 10px 0px;
+    border: 1px solid var(--vscode-editor-foreground);
+    padding: 4px;
 }
 
 #template-item table {
@@ -224,4 +222,9 @@ table {
 
 #template-table {
     margin: 10px 0px;
+}
+
+#template-table td,
+#template-table th {
+    border: 1px solid var(--vscode-editor-foreground);
 }
