@@ -15,7 +15,6 @@ export function getLoadingView() {
 }
 
 export function getTemplateView(templates: Template[]) {
-    console.log(`received ${templates.length} templates`);
     let template = `<!DOCTYPE html>
     <html lang="en">
     <head>
