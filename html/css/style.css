@@ -54,6 +54,7 @@ input[type="text"]::placeholder {
 .select-selected {
     background-color: var(--vscode-input-background);
     color: var(--vscode-input-foreground);
+    margin-top: 3px;
 }
 
 
