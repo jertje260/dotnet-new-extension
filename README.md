@@ -1,6 +1,8 @@
 # Dotnet new extension
 
-This extension is built on top of the `dotnet new` CLI, it allows for an easier creation of templates, by selecting the template, filling out the parameters & use the create button
+This extension is built on top of the `dotnet new` CLI, it allows for an easier creation of templates, by selecting the template, filling out the parameters & use the create button.
+
+![extension gif](./extension.gif)
 
 ## Features
 
@@ -33,5 +35,4 @@ Created styling for the webview based on settings of your current theme.
 
 ## Upcoming features
 
-- Theming based on the vs code themes
 - create template in folder from right click folder
