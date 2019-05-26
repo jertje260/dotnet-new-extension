@@ -31,6 +31,5 @@ export function executeTemplateCreation(templateInformation: CreateTemplate){
 			templateString += `${templateInformation.parameters[key]} `;
 		}
 	});
-	console.info(`executing ${templateString}`);
 	return exec(templateString, {});
 }

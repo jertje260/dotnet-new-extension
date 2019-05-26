@@ -49,7 +49,6 @@ export function getTemplateView(templates: Template[]) {
 
         document.getElementsByClass("template")
             .addEventListener("click", (evt) => {
-                console.log(evt);
                 vscode.postMessage({
                     template: evt.target
                 })

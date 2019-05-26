@@ -65,6 +65,12 @@ export function activate(context: vscode.ExtensionContext) {
 							addPathToTemplateCreation(message.data);
 							break;
 						}
+						case "setTitle": {
+							if (panel !== undefined) {
+								panel.title = message.data;
+							}
+							break;
+						}
 					}
 				},
 				undefined,

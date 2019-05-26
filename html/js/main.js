@@ -1,5 +1,4 @@
 (function() {
-    console.debug("started main");
     const vscode = acquireVsCodeApi();
 
     function init() {
@@ -12,23 +11,19 @@
         window.addEventListener('message', event => {
 
             const message = event.data; // The JSON data our extension sent
-            console.log(message);
             switch (message.command) {
                 case 'templates':
                     {
-                        console.info('loading templates');
                         loadTemplates(message.data);
                         break;
                     }
                 case 'template':
                     {
-                        console.info('load template');
                         loadTemplate(message.data);
                         break;
                     }
                 case 'output':
                     {
-                        console.info('received output');
                         showOutput(message.data);
                         break;
                     }
@@ -65,7 +60,6 @@
 
     function executeTemplateCreation(parameters) {
         const template = document.getElementById("template-name").innerHTML;
-        console.log(template);
         vscode.postMessage({
             command: 'executeCreation',
             data: {
@@ -77,12 +71,16 @@
 
     function showTemplateBlock() {
         document.getElementById("templates").style.display = "none";
-        document.getElementById("template").style.display = "block"
+        document.getElementById("template").style.display = "block";
     }
 
     function showTemplatesBlock() {
         document.getElementById("template").style.display = "none";
-        document.getElementById("templates").style.display = "block"
+        document.getElementById("templates").style.display = "block";
+        vscode.postMessage({
+            command: 'setTitle',
+            data: "Select your template"
+        });
     }
 
     function fetchTemplate(shortName) {
@@ -201,7 +199,7 @@
                 }
             default:
                 {
-                    console.log(`input type ${templateOption.type} was not handled`);
+                    console.error(`input type ${templateOption.type} was not handled`);
                     return "";
                 }
         }
@@ -224,7 +222,6 @@
         }
 
         const inputElements = document.getElementsByTagName("input");
-        console.log(inputElements);
         for (let i = 0; i < inputElements.length; i++) {
             createParamForInput(params, inputElements[i]);
         }
