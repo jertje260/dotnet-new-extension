@@ -90,9 +90,9 @@ stages:
               codeCoverageTool: 'cobertura' # Options: cobertura, jaCoCo
               summaryFileLocation: $(System.DefaultWorkingDirectory)/coverage/cobertura-coverage.xml
   - stage:
-    displayName: "Publish extension"
+    displayName: "Package extension"
     jobs:
-      - job: "Publish"
+      - job: "Package"
         pool:
           name: Hosted Ubuntu 1604
           demands: npm
