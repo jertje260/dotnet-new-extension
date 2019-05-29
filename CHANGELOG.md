@@ -1,9 +1,17 @@
 # Change Log
 
-All notable changes to the "dotnet-new-extension" extension will be documented in this file.
+## 1.0.0
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+Initial release of `dotnet-new-extension`.
 
-## [Unreleased]
+## 1.0.1
 
-- Initial release
+Fixed issue where the html wasn't packaged properly, now it does work.
+
+## 1.0.2
+
+Created styling for the webview based on settings of your current theme.
+
+## 1.0.3
+
+Fixed issue where parsing of the templates didn't work with different length then the default.

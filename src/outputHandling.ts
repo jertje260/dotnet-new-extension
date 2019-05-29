@@ -1,7 +1,7 @@
 import { Template } from "./template";
 import { TemplateOption, SelectOption } from "./templateOptions";
 
-const separator = "----------------------------------------------------------------------------------------------------------------------------";
+const separator = "---";
 
 const allTemplatesRegex = /(.*?)[ ]{2,}(.*?)[ ]{2,}(.*?)[ ]{2,}(.*)/;
 export function handleDotnetListOutput(output: string): Array<Template> {
@@ -13,7 +13,7 @@ export function handleDotnetListOutput(output: string): Array<Template> {
     let templateListStarted = false;
     for (let i = 0; i < lines.length; i++) {
         if (!templateListStarted) {
-            if (lines[i] === separator) {
+            if (lines[i].startsWith(separator)) {
                 templateListStarted = true;
             }
         } else {

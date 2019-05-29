@@ -33,6 +33,10 @@ Fixed issue where the html wasn't packaged properly, now it does work.
 
 Created styling for the webview based on settings of your current theme.
 
+### 1.0.3
+
+Fixed issue where parsing of the templates didn't work with different length then the default.
+
 ## Upcoming features
 
 - create template in folder from right click folder
