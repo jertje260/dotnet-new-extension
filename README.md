@@ -37,6 +37,10 @@ Created styling for the webview based on settings of your current theme.
 
 Fixed issue where parsing of the templates didn't work with different length then the default.
 
+### 1.0.4
+
+Added UI element to select the folder for output, instead of selecting it the moment that you hit `create`/`dry run`
+
 ## Upcoming features
 
 - create template in folder from right click folder
