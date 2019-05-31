@@ -27,5 +27,14 @@ export class Template {
             "false",
             []
         );
+
+        this.options["output"] = new TemplateOption(
+            "output",
+            "Location to place the generated output.",
+            "path",
+            true,
+            "",
+            []
+        )
     }
 }

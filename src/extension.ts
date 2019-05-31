@@ -62,13 +62,18 @@ export function activate(context: vscode.ExtensionContext) {
 							break;
 						}
 						case "executeCreation": {
-							addPathToTemplateCreation(message.data);
+							//addPathToTemplateCreation(message.data);
+							createTemplate(message.data);
 							break;
 						}
 						case "setTitle": {
 							if (panel !== undefined) {
 								panel.title = message.data;
 							}
+							break;
+						}
+						case "selectFolder": {
+							selectFolder();
 							break;
 						}
 					}
@@ -121,31 +126,28 @@ export function activate(context: vscode.ExtensionContext) {
 			});
 	}
 
-	function addPathToTemplateCreation(createObject: CreateTemplate) {
-		if (selectedPath !== undefined) {
-			createObject.parameters.output = selectedPath;
-			if (createObject.parameters["dry-run"] === undefined) {
-				selectedPath = undefined;
-			}
-		} else {
-			vscode.window.showOpenDialog({
-				canSelectFolders: true,
-				canSelectFiles: false,
-				canSelectMany: false,
-				openLabel: "Select folder"
-			}).then((paths) => {
-				if (paths !== undefined) {
-					createObject.parameters.output = paths[0].fsPath;
-					if (createObject.parameters["dry-run"] !== undefined) {
-						selectedPath = createObject.parameters.output;
-					}
-					createTemplate(createObject);
+	function selectFolder(){
+		vscode.window.showOpenDialog({
+			canSelectFolders: true,
+			canSelectFiles: false,
+			canSelectMany: false,
+			openLabel: "Select folder"
+		}).then((paths) => {
+			if (paths !== undefined) {
+				if (panel !== undefined) {
+					const message: Message = {
+						command: 'path',
+						data: paths[0].fsPath
+					};
+					panel.webview.postMessage(message);
 				} else {
-					// no path selected	
+					vscode.window.showErrorMessage("No panel to send the path to");
 				}
-			});
-		}
-
+				
+			} else {
+				// no path selected	
+			}
+		});
 	}
 
 	function createTemplate(createObject: CreateTemplate) {

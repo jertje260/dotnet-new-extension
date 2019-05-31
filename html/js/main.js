@@ -1,4 +1,4 @@
-(function() {
+(function () {
     const vscode = acquireVsCodeApi();
 
     function init() {
@@ -27,6 +27,14 @@
                         showOutput(message.data);
                         break;
                     }
+                case 'path':
+                    {
+                        setPath(message.data);
+                        break;
+                    }
+                default: {
+                    console.log("no clue what to do with message:", message);
+                }
             }
         });
     }
@@ -49,6 +57,7 @@
         document.getElementById("create").addEventListener("click", executeCreation);
 
         document.addEventListener("click", closeAllSelect);
+        document.addEventListener("click", selectFolder);
     }
 
     function fetchTemplates() {
@@ -165,6 +174,20 @@
         return form;
     }
 
+    function setPath(path){
+        document.getElementById("template-form-output-value").innerHTML=path;
+    }
+
+    function selectFolder(evt){
+        if(evt.target.id === "template-form-output"){
+            vscode.postMessage(
+                {
+                    command: "selectFolder"
+                }
+            )
+        }
+    }
+
     function generateInput(templateOption) {
         switch (templateOption.type) {
             case "text":
@@ -196,6 +219,16 @@
                             <span class="checkmark"></span>
                         </label>
                     </div>`;
+                }
+            case "path":
+                {
+                    return `
+                    <div class=input-container>
+                        <label for="template-form-${templateOption.parameter}">${templateOption.description}</label>
+                        <label id="template-form-${templateOption.parameter}-value">No folder selected</label>
+                        <button class="select-folder" id="template-form-${templateOption.parameter}">Select folder</button>
+                    </div>
+                    `;
                 }
             default:
                 {
@@ -230,7 +263,9 @@
         for (let i = 0; i < selectElements.length; i++) {
             createParamForInput(params, selectElements[i]);
         }
-        return params
+
+        params["output"] = document.getElementById("template-form-output-value").innerHTML;
+        return params;
     }
 
     function createParamForInput(params, element) {
@@ -293,7 +328,7 @@
                 create a new DIV that will act as an option item: */
                 clickHandlerDiv = document.createElement("DIV");
                 clickHandlerDiv.innerHTML = selectElement.options[j].innerHTML;
-                clickHandlerDiv.addEventListener("click", function(e) {
+                clickHandlerDiv.addEventListener("click", function (e) {
                     /* When an item is clicked, update the original select box,
                     and the selected item: */
                     var y, i, k, s, h;
@@ -316,7 +351,7 @@
                 optionsDiv.appendChild(clickHandlerDiv);
             }
             selectElements[i].appendChild(optionsDiv);
-            newSelectDiv.addEventListener("click", function(e) {
+            newSelectDiv.addEventListener("click", function (e) {
                 /* When the select box is clicked, close any other select boxes,
                 and open/close the current select box: */
                 e.stopPropagation();
