@@ -19,3 +19,7 @@ Fixed issue where parsing of the templates didn't work with different length the
 ## 1.0.4
 
 Added UI element to select the folder for output, instead of selecting it the moment that you hit `create`/`dry run`
+
+## 1.1.0
+
+Added the option to create template by right clicking folder

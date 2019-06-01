@@ -12,26 +12,22 @@
 
             const message = event.data; // The JSON data our extension sent
             switch (message.command) {
-                case 'templates':
-                    {
-                        loadTemplates(message.data);
-                        break;
-                    }
-                case 'template':
-                    {
-                        loadTemplate(message.data);
-                        break;
-                    }
-                case 'output':
-                    {
-                        showOutput(message.data);
-                        break;
-                    }
-                case 'path':
-                    {
-                        setPath(message.data);
-                        break;
-                    }
+                case 'templates': {
+                    loadTemplates(message.data);
+                    break;
+                }
+                case 'template': {
+                    loadTemplate(message.data);
+                    break;
+                }
+                case 'output': {
+                    showOutput(message.data);
+                    break;
+                }
+                case 'path': {
+                    setPath(message.data);
+                    break;
+                }
                 default: {
                     console.log("no clue what to do with message:", message);
                 }
@@ -174,12 +170,12 @@
         return form;
     }
 
-    function setPath(path){
-        document.getElementById("template-form-output-value").innerHTML=path;
+    function setPath(path) {
+        document.getElementById("template-form-output-value").innerHTML = path;
     }
 
-    function selectFolder(evt){
-        if(evt.target.id === "template-form-output"){
+    function selectFolder(evt) {
+        if (evt.target.id === "template-form-output") {
             vscode.postMessage(
                 {
                     command: "selectFolder"

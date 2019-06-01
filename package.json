@@ -7,7 +7,7 @@
     "repository": {
         "url": "https://github.com/jertje260/dotnet-new-extension"
     },
-    "version": "1.0.4",
+    "version": "1.1.0",
     "engines": {
         "vscode": "^1.33.0"
     },
@@ -15,14 +15,26 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.selectTemplate"
+        "*"
     ],
     "main": "./out/src/extension.js",
     "contributes": {
         "commands": [{
-            "command": "extension.selectTemplate",
+            "command": "dotnet-new.createItemFromTemplate",
             "title": "Dotnet new: Create new item from template"
-        }]
+        },{
+            "command": "dotnet-new.createItemFromTemplateInFolder",
+            "title": "Create new item from template here"
+        }],
+        "menus": {
+            "explorer/context": [{
+                "when": "explorerResourceIsFolder",
+                "command": "dotnet-new.createItemFromTemplateInFolder",
+                "group": "0_dotnet-new",
+                "alt": "dotnet-new.createItemFromTemplate"
+            }]
+        }
+
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",

@@ -8,6 +8,8 @@ This extension is built on top of the `dotnet new` CLI, it allows for an easier 
 
 Currently this extension adds a command (`Dotnet new: Create item from template`). This will create a new window with all the currently available templates in dotnet new (including separately installed templates).
 
+It also add the option to create this from a folder in the explorer. Rightclick a folder, select `Create new item from template here` and opens up the same as the above command, but with the folder prefilled.
+
 ## Requirements
 
 `dotnet core sdk`
@@ -41,6 +43,10 @@ Fixed issue where parsing of the templates didn't work with different length the
 
 Added UI element to select the folder for output, instead of selecting it the moment that you hit `create`/`dry run`
 
+### 1.1.0
+
+Added the option to create template by right clicking folder
+
 ## Upcoming features
 
-- create template in folder from right click folder
+Nothing at the moment, if you think of something, make a feature request on github :)

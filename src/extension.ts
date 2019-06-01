@@ -14,15 +14,26 @@ import { CreateTemplate } from './createTemplate';
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
 	const templateManager = new TemplateManager();
-	let selectedPath: string | undefined = undefined;
 
 	let panel: vscode.WebviewPanel | undefined = undefined;
+	let selectedLocation: string | undefined = undefined;
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('extension.selectTemplate', () => {
-		// The code you place here will be executed every time your command is executed
+	let disposable = vscode.commands.registerCommand('dotnet-new.createItemFromTemplate', handleExtensionExecution);
+	let disposableFromPath = vscode.commands.registerCommand('dotnet-new.createItemFromTemplateInFolder', handleExtensionExecution);
+
+	context.subscriptions.push(disposable);
+	context.subscriptions.push(disposableFromPath);
+
+	function handleExtensionExecution(options: any) {
+
+		if (options !== undefined) {
+			selectedLocation = options.fsPath;
+		} else {
+			selectedLocation = undefined;
+		}
 		try {
 			panel = vscode.window.createWebviewPanel(
 				'templateSelector',
@@ -62,7 +73,6 @@ export function activate(context: vscode.ExtensionContext) {
 							break;
 						}
 						case "executeCreation": {
-							//addPathToTemplateCreation(message.data);
 							createTemplate(message.data);
 							break;
 						}
@@ -85,102 +95,107 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.window.showErrorMessage("Something unexpected happened while trying to start extension", e);
 			console.error(e);
 		}
-	});
 
-	function loadTemplates() {
-		selectedPath = undefined;
-		templateManager
-			.getTemplates()
-			.then((templates) => {
-				if (panel !== undefined) {
-					const message: Message = {
-						command: 'templates',
-						data: templates
-					};
-					panel.webview.postMessage(message);
+		function loadTemplates() {
+			templateManager
+				.getTemplates()
+				.then((templates) => {
+					if (panel !== undefined) {
+						const message: Message = {
+							command: 'templates',
+							data: templates
+						};
+						panel.webview.postMessage(message);
+					} else {
+						vscode.window.showErrorMessage("No panel to display the templates");
+					}
+				})
+				.catch((err) => {
+					handleError(err);
+				});
+		}
+
+		function loadTemplate(shortName: string) {
+			templateManager.loadTemplateInfo(shortName)
+				.then((template) => {
+					if (panel !== undefined) {
+						const message: Message = {
+							command: 'template',
+							data: template
+						};
+						panel.webview.postMessage(message);
+						if (selectedLocation !== undefined) {
+							const location: Message = {
+								command: 'path',
+								data: selectedLocation
+							};
+							panel.webview.postMessage(location);
+						}
+					} else {
+						vscode.window.showErrorMessage("No panel to display the template information");
+					}
+				})
+				.catch((err) => {
+					handleError(err);
+				});
+		}
+
+		function selectFolder() {
+			vscode.window.showOpenDialog({
+				canSelectFolders: true,
+				canSelectFiles: false,
+				canSelectMany: false,
+				openLabel: "Select folder"
+			}).then((paths) => {
+				if (paths !== undefined) {
+					if (panel !== undefined) {
+						const message: Message = {
+							command: 'path',
+							data: paths[0].fsPath
+						};
+						panel.webview.postMessage(message);
+					} else {
+						vscode.window.showErrorMessage("No panel to send the path to");
+					}
+
 				} else {
-					vscode.window.showErrorMessage("No panel to display the templates");
+					// no path selected	
 				}
-			})
-			.catch((err) => {
-				handleError(err);
 			});
-	}
+		}
 
-	function loadTemplate(shortName: string) {
-		selectedPath = undefined;
-		templateManager.loadTemplateInfo(shortName)
-			.then((template) => {
-				if (panel !== undefined) {
-					const message: Message = {
-						command: 'template',
-						data: template
-					};
-					panel.webview.postMessage(message);
-				} else {
-					vscode.window.showErrorMessage("No panel to display the template information");
-				}
-			})
-			.catch((err) => {
-				handleError(err);
-			});
-	}
+		function createTemplate(createObject: CreateTemplate) {
+			commands.executeTemplateCreation(createObject)
+				.then((output) => {
+					if (panel !== undefined) {
+						const message: Message = {
+							command: 'output',
+							data: output.stdout
+						};
+						panel.webview.postMessage(message);
+					} else {
+						vscode.window.showErrorMessage("No panel to display the template creation output");
+					}
+				})
+				.catch((err) => {
+					handleError(err);
+				});
+		}
 
-	function selectFolder(){
-		vscode.window.showOpenDialog({
-			canSelectFolders: true,
-			canSelectFiles: false,
-			canSelectMany: false,
-			openLabel: "Select folder"
-		}).then((paths) => {
-			if (paths !== undefined) {
-				if (panel !== undefined) {
-					const message: Message = {
-						command: 'path',
-						data: paths[0].fsPath
-					};
-					panel.webview.postMessage(message);
-				} else {
-					vscode.window.showErrorMessage("No panel to send the path to");
-				}
-				
+		function handleError(err: Error) {
+			if (panel !== undefined) {
+				panel.webview.html = webviews.getLoadingFailedView(JSON.stringify(err));
 			} else {
-				// no path selected	
-			}
-		});
-	}
-
-	function createTemplate(createObject: CreateTemplate) {
-		commands.executeTemplateCreation(createObject)
-			.then((output) => {
-				if (panel !== undefined) {
-					const message: Message = {
-						command: 'output',
-						data: output.stdout
-					};
-					panel.webview.postMessage(message);
+				if (err.stack !== undefined) {
+					vscode.window.showErrorMessage(err.stack);
 				} else {
-					vscode.window.showErrorMessage("No panel to display the template creation output");
+					vscode.window.showErrorMessage(err.message);
 				}
-			})
-			.catch((err) => {
-				handleError(err);
-			});
-	}
-
-	function handleError(err: Error) {
-		if (panel !== undefined) {
-			panel.webview.html = webviews.getLoadingFailedView(JSON.stringify(err));
-		} else {
-			if (err.stack !== undefined) {
-				vscode.window.showErrorMessage(err.stack);
-			} else {
-				vscode.window.showErrorMessage(err.message);
 			}
 		}
-	}
 
-	context.subscriptions.push(disposable);
+
+	}
 }
 
 // this method is called when your extension is deactivated
