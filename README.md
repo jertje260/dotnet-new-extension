@@ -46,8 +46,8 @@ When reopening create tab, it switches back to template overview.
 
 ### 1.1.1
 
-- Some templates commonly have parameter of type string, where that should be text. These will now also be showed in template creation as text.
+- Some templates commonly have parameter of type `string`, where that should be `text`. These will now also be showed in template creation as text.
 
 ## Upcoming features
 
-Nothing at the moment, if you think of something, make a feature request on github :)
+Support for the `float`, `hex`, `int` input types (not used in default templates) 
