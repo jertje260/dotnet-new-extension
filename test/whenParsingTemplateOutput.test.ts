@@ -105,7 +105,7 @@ suite("when parsing template output", function () {
     test("given mvc template should have 'aad-b2c-instance' option string", function () {
         const template = handleTemplate(testTemplates.mvcTemplate);
 
-        assert.equal("string", template.options["aad-b2c-instance"].type);
+        assert.equal("text", template.options["aad-b2c-instance"].type);
     });
 
     test("given mvc template should have 'no-restore' option bool", function () {

@@ -20,3 +20,7 @@
 
 - Added UI element to select the folder for output, instead of selecting it the moment that you hit `create`/`dry run`
 - Added the option to create template by right clicking folder
+
+## 1.1.1
+
+- Some templates commonly have parameter of type `string`, where that should be `text`. These will now also be showed in template creation as text.

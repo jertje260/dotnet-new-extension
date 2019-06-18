@@ -44,6 +44,10 @@ When reopening create tab, it switches back to template overview.
 - Added UI element to select the folder for output, instead of selecting it the moment that you hit `create`/`dry run`
 - Added the option to create template by right clicking folder
 
+### 1.1.1
+
+- Some templates commonly have parameter of type string, where that should be text. These will now also be showed in template creation as text.
+
 ## Upcoming features
 
 Nothing at the moment, if you think of something, make a feature request on github :)

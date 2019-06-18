@@ -115,6 +115,9 @@ function createTemplateOption(
         type = "select";
         selectOptions = createSelectOptions(optionList);
     }
+    if(type === "string"){
+        type = "text";
+    }
     return new TemplateOption(parameter, description, type, optionalRequired === "Required", defaultValue, selectOptions);
 }
 
