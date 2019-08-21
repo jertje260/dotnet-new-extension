@@ -13,10 +13,11 @@ import { CreateTemplate } from './createTemplate';
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
-	const templateManager = new TemplateManager();
-
 	let panel: vscode.WebviewPanel | undefined = undefined;
 	let selectedLocation: string | undefined = undefined;
+	let workspaceDir : string | undefined = vscode.workspace.rootPath;
+
+	const templateManager = new TemplateManager(workspaceDir);
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
@@ -84,6 +85,10 @@ export function activate(context: vscode.ExtensionContext) {
 						}
 						case "selectFolder": {
 							selectFolder();
+							break;
+						}
+						case "dotnetVersion" : {
+							getDotnetVersion();
 							break;
 						}
 					}
@@ -165,7 +170,7 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 
 		function createTemplate(createObject: CreateTemplate) {
-			commands.executeTemplateCreation(createObject)
+			commands.executeTemplateCreation(createObject, workspaceDir)
 				.then((output) => {
 					if (panel !== undefined) {
 						const message: Message = {
@@ -179,6 +184,24 @@ export function activate(context: vscode.ExtensionContext) {
 				})
 				.catch((err) => {
 					handleError(err);
+				});
+		}
+
+		function getDotnetVersion(){
+			commands.getDotnetVersion(workspaceDir)
+				.then((output) => {
+					if (panel !== undefined) {
+						const message: Message = {
+							command: 'version',
+							data: output
+						};
+						panel.webview.postMessage(message);
+					} else {
+						vscode.window.showErrorMessage("No panel to display the dotnet version");
+					}
+				})
+				.catch((err) => {
+					vscode.window.showErrorMessage("Error happened when getting dotnet version: " + err);
 				});
 		}
 

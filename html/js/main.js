@@ -4,6 +4,7 @@
     function init() {
         initMessageHandling();
         initEventHandling();
+        loadVersion();
         fetchTemplates();
     }
 
@@ -26,6 +27,10 @@
                 }
                 case 'path': {
                     setPath(message.data);
+                    break;
+                }
+                case 'version' : {
+                    setVersion(message.data);
                     break;
                 }
                 default: {
@@ -63,6 +68,13 @@
         });
     }
 
+    function loadVersion(){
+        vscode.postMessage({
+            command: 'dotnetVersion',
+            data: {}
+        });
+    }
+
     function executeTemplateCreation(parameters) {
         const template = document.getElementById("template-name").innerHTML;
         vscode.postMessage({
@@ -96,6 +108,10 @@
             command: 'loadTemplate',
             data: shortName
         });
+    }
+
+    function setVersion(version){
+        document.getElementById('version').innerHTML = version;
     }
 
     function loadTemplates(templates) {

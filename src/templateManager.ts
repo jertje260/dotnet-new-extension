@@ -5,9 +5,17 @@ import { Template } from './template';
 export class TemplateManager {
     protected templates: Template[] = [];
     private loaded: boolean = false;
+    private workspace: string | undefined = undefined;
+
+    /**
+     *
+     */
+    constructor(workspaceDir: string | undefined) {
+        this.workspace = workspaceDir;
+    }
 
     public getTemplates(): Promise<Template[]> {
-        return commands.getDotnetNewList()
+        return commands.getDotnetNewList(this.workspace)
             .then((output) => {
                 if (this.loaded) {
                     return this.templates;
@@ -27,7 +35,7 @@ export class TemplateManager {
                 if (template.loaded) {
                     resolve(template);
                 } else {
-                    commands.getDotnetNewTemplateInformation(template)
+                    commands.getDotnetNewTemplateInformation(template, this.workspace)
                         .then((output) => {
                             try {
                                 resolve(handler.handleDotnetTemplateOutput(template, output.stdout));

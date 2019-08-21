@@ -24,3 +24,8 @@
 ## 1.1.1
 
 - Some templates commonly have parameter of type `string`, where that should be `text`. These will now also be showed in template creation as text.
+
+## 1.1.2
+
+- Changed the location of where the dotnet commands are run. They will run in the workspace folder if available, otherwise they will still run in the vscode install directory
+- Added version of the dotnet CLI to the UI.
